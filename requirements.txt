@@ -1,0 +1,34 @@
+# Ad Campaign Spend Tracker - Python Dependencies
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Data generation
+Faker>=20.0.0
+
+# Data validation and testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+great-expectations>=0.18.0
+
+# Data warehouse connectors
+snowflake-connector-python>=3.0.0
+snowflake-sqlalchemy>=1.4.0
+
+# dbt dependencies
+dbt-core>=1.7.0
+dbt-snowflake>=1.7.0
+
+# Airflow (if running locally)
+apache-airflow>=2.7.0
+apache-airflow-providers-snowflake>=5.0.0
+
+# Additional utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0
+click>=8.1.0
+
+# Development and testing
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0

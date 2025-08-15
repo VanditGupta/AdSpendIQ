@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Airflow
+airflow.cfg
+airflow.db
+airflow-webserver.pid
+logs/
+standalone_admin_password.txt
+webserver_config.py
+
+# Data files (uncomment if you don't want to track generated data)
+# data/raw/*.csv
+# data/processed/
+# data/final/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# dbt
+dbt_packages/
+target/
+logs/
+
+# Great Expectations
+great_expectations/uncommitted/
+
+# Snowflake
+*.snowflake
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
