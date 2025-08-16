@@ -4,7 +4,7 @@ A comprehensive **Data Engineering Business Intelligence Project** demonstrating
 
 ## 📊 Project Overview
 
-This project simulates a real-world **Ad Campaign Analytics** system, processing data from multiple advertising platforms (Google, Facebook, LinkedIn, TikTok, Twitter) to provide actionable insights for marketing teams.
+This project uses **Faker** to generate realistic ad campaign data, simulating a real-world **Ad Campaign Analytics** system that processes data from multiple advertising platforms (Google, Facebook, LinkedIn, TikTok, Twitter) to provide actionable insights for marketing teams.
 
 ### 🎯 **Project Highlights**
 
@@ -42,24 +42,43 @@ Our data architecture follows the **Kimball Star Schema** methodology, featuring
 - **Business Focus**: Aligned with marketing analytics requirements
 
 
-### 📊 **Database ERD (Entity Relationship Diagram)**
+### 📊 **Database ERD **
 
-Here's a visual representation of the AdSpendIQ **Kimball Star Schema**, illustrating the relationships between the fact, dimension, and mart tables:
+Here's a visual representation of the AdSpendIQ exported from DBeaver, illustrating the relationships between the fact, dimension, and mart tables:
 
 ![AdSpendIQ Star Schema ERD](star_schema_diagrams/adspendiq.png)
 
 **ERD Features:**
 - **Central Fact Table**: `fact_ad_performance` with all ad metrics
 - **6 Dimension Tables**: Complete Kimball methodology implementation
-- **3 Mart Tables**: Business intelligence aggregations
+- **3 Data Mart Tables**: Business intelligence aggregations
 - **Proper Relationships**: All foreign key constraints and cardinality
 - **Professional Design**: Clean, readable database structure
+
+## 🏗️ **Architecture**
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Data Sources  │    │   Apache        │    │   Snowflake     │    │   dbt           │
+│   (Faker)       │───▶│   Airflow       │───▶│   Data          │───▶│   Transform     │
+│                 │    │   Orchestration │    │   Warehouse     │    │   & Modeling   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │                       │                       │
+                                ▼                       ▼                       ▼
+                       ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+                       │   Data Quality  │    │   Data          │    │   Business      │
+                       │   Validation    │    │   Retention     │    │   Intelligence  │
+                       │   (Great        │    │   Management    │    │   (Qlik Sense)  │
+                       │    Expectations │    │                 │    │                 │
+                       │   + PyTest)     │    │                 │    │                 │
+                       └─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
 
 
 ### 🚀 **Airflow DAG Visualizations**
 
-Here are the professional visualizations of all Airflow DAGs that orchestrate the AdSpendIQ data pipeline, with detailed explanations of what each DAG does:
+Here are all the Airflow DAGs that orchestrate the AdSpendIQ data pipeline, plotted using Graphviz:
 
 #### **Master Portfolio Pipeline DAG**
 ![Master Portfolio Pipeline](dag_visualizations/master_portfolio_pipeline_dag.png)
@@ -137,24 +156,6 @@ Here are the professional visualizations of all Airflow DAGs that orchestrate th
 6. **Monitoring DAG** tracks pipeline health and sends alerts
 
 **📊 Pipeline Flow**: Data Generation → Quality Validation → Transformation → Analytics Testing → Business Intelligence
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Data Sources  │    │   Apache        │    │   Snowflake     │    │   dbt           │
-│   (Simulated)   │───▶│   Airflow       │───▶│   Data          │───▶│   Transform     │
-│                 │    │   Orchestration │    │   Warehouse     │    │   & Modeling   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │                       │                       │
-                                ▼                       ▼                       ▼
-                       ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-                       │   Data Quality  │    │   Data          │    │   Business      │
-                       │   Validation    │    │   Retention     │    │   Intelligence  │
-                       │   (Great        │    │   Management    │    │   & Analytics   │
-                       │    Expectations)│    │                 │    │                 │
-                       └─────────────────┘    └─────────────────┘    └─────────────────┘
-```
 
 ## 📈 Current Data Volume
 
