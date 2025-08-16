@@ -1,7 +1,7 @@
 """
-Ad Campaign Spend Tracker - Comprehensive Airflow DAG
+Ad Campaign Spend Tracker - Simplified Airflow DAG
 
-This DAG handles both data generation and Snowflake loading with intelligent 15-day refresh cycles.
+This DAG handles data generation and Snowflake loading with intelligent 15-day refresh cycles.
 Runs every day at 9:00 AM to generate data and load it to Snowflake.
 
 Author: Vandit Gupta
@@ -12,15 +12,8 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.empty import EmptyOperator
-import sys
+import subprocess
 import os
-from pathlib import Path
-
-# Import our custom functions
-sys.path.append(str(Path(__file__).parent.parent))
-from scripts.generate_fake_ads import generate_fake_ad_data, save_daily_data
-from scripts.load_daily_snowflake import load_daily_to_snowflake
-from scripts.data_retention_manager import DataRetentionManager
 
 # Default arguments for the DAG
 default_args = {
@@ -36,38 +29,55 @@ default_args = {
 
 def generate_daily_ad_data(**context):
     """
-    Generate daily ad campaign data and save to CSV.
+    Generate daily ad campaign data using the script.
     
     Args:
         **context: Airflow context
     
     Returns:
-        str: Success message with file path
+        str: Success message
     """
     
-    # Get execution date from Airflow context (Airflow 3.0 compatible)
     execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
     target_date = execution_date.date()
     
     print(f"🚀 Starting daily ad data generation for {target_date}")
     
     try:
-        # Generate fake ad data for the target date
-        df = generate_fake_ad_data(num_rows=5000, target_date=target_date)
+        # Run the data generation script
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts', 'generate_fake_ads.py')
+        python_path = os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python')
         
-        # Save to CSV
-        filepath = save_daily_data(df, target_date=target_date)
+        print(f"🔍 Debug info:")
+        print(f"  Script path: {script_path}")
+        print(f"  Python path: {python_path}")
+        print(f"  Working directory: {os.path.dirname(script_path)}")
+        print(f"  Script exists: {os.path.exists(script_path)}")
+        print(f"  Python exists: {os.path.exists(python_path)}")
         
-        # Store file path in XCom for next task
-        context['task_instance'].xcom_push(key='daily_file_path', value=str(filepath))
+        if not os.path.exists(script_path):
+            raise Exception(f"Script not found: {script_path}")
+        if not os.path.exists(python_path):
+            raise Exception(f"Python interpreter not found: {python_path}")
         
-        # Log success
-        print(f"✅ Successfully generated {len(df)} rows of ad data")
-        print(f"📁 File saved to: {filepath}")
+        result = subprocess.run(
+            [python_path, script_path],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(script_path)
+        )
         
-        # Return success message
-        return f"Successfully generated ad data for {target_date}. File: {filepath}"
+        print(f"📊 Subprocess result:")
+        print(f"  Return code: {result.returncode}")
+        print(f"  Stdout: {result.stdout}")
+        print(f"  Stderr: {result.stderr}")
         
+        if result.returncode == 0:
+            print("✅ Successfully generated daily ad data")
+            return f"Successfully generated ad data for {target_date}"
+        else:
+            raise Exception(f"Script failed with return code {result.returncode}: {result.stderr}")
+            
     except Exception as e:
         print(f"❌ Error generating ad data: {str(e)}")
         raise e
@@ -80,171 +90,81 @@ def load_daily_to_snowflake_task(**context):
         **context: Airflow context
     
     Returns:
-        str: Summary of action taken
+        str: Success message
     """
     
     try:
         print("🚀 Starting daily Snowflake data loader")
         
-        # Get the daily file path from previous task
-        task_instance = context['task_instance']
-        daily_file_path = task_instance.xcom_pull(key='daily_file_path')
+        # Run the Snowflake loader script
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts', 'load_daily_snowflake.py')
         
-        print(f"🔍 XCom pull result: daily_file_path = {daily_file_path}")
+        # Find today's daily file
+        execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
+        target_date = execution_date.date()
+        daily_file = f"data/raw/daily/{target_date.year}/{target_date.month:02d}/ads_{target_date}.csv"
         
-        # For testing purposes, if no XCom data, try to find the file manually
-        if not daily_file_path:
-            print("⚠️ No XCom data found, trying to find daily file manually...")
-            # For testing, look for the same date that was generated (execution date)
-            execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
-            target_date = execution_date.date()
-            daily_file_path = f"data/raw/daily/{target_date.strftime('%Y/%m')}/ads_{target_date.strftime('%Y-%m-%d')}.csv"
-            print(f"🔍 Trying manual path: {daily_file_path}")
+        # Use full virtual environment Python path
+        python_path = os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python')
+        result = subprocess.run(
+            [python_path, script_path, daily_file],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(script_path)
+        )
+        
+        if result.returncode == 0:
+            print("✅ Successfully loaded daily data to Snowflake")
+            return f"Successfully loaded data for {target_date} to Snowflake"
+        else:
+            raise Exception(f"Script failed: {result.stderr}")
             
-            if not Path(daily_file_path).exists():
-                raise ValueError(f"No daily file found at {daily_file_path}")
-        
-        print(f"📁 Loading daily file: {daily_file_path}")
-        
-        # Load the daily data to Snowflake using our dedicated script
-        rows_loaded = load_daily_to_snowflake(daily_file_path)
-        
-        print(f"✅ Successfully loaded {rows_loaded:,} rows to Snowflake")
-        
-        # Store results in XCom for summary task
-        context['task_instance'].xcom_push(key='action_taken', value='daily_incremental')
-        context['task_instance'].xcom_push(key='rows_loaded', value=rows_loaded)
-        
-        return f"Daily data loaded successfully: {rows_loaded:,} rows added to Snowflake"
-        
     except Exception as e:
-        print(f"❌ Daily Snowflake loader failed: {e}")
+        print(f"❌ Error loading data to Snowflake: {str(e)}")
         raise e
 
 def run_data_retention(**context):
     """
-    Run data retention policies to prevent infinite data growth.
-    Keeps only the last 90 days of data in both local files and Snowflake.
+    Run data retention management.
     
     Args:
         **context: Airflow context
     
     Returns:
-        str: Summary of retention actions taken
+        str: Success message
     """
     
     try:
-        print("🧹 Starting data retention cleanup")
+        print("🧹 Starting data retention management")
         
-        # Create retention manager (90 days retention, with archiving)
-        retention_manager = DataRetentionManager(retention_days=90, archive_enabled=True)
+        # Run the retention manager script
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts', 'data_retention_manager.py')
+        python_path = os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python')
+        result = subprocess.run(
+            [python_path, script_path],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(script_path)
+        )
         
-        # Run full cleanup (local files + Snowflake)
-        deleted_rows = retention_manager.run_full_cleanup()
-        
-        print(f"✅ Data retention completed: {deleted_rows:,} old rows removed from Snowflake")
-        
-        # Store results in XCom for summary task
-        context['task_instance'].xcom_push(key='retention_action', value='cleanup_completed')
-        context['task_instance'].xcom_push(key='rows_deleted', value=deleted_rows)
-        
-        return f"Data retention completed: {deleted_rows:,} old rows removed"
-        
+        if result.returncode == 0:
+            print("✅ Successfully ran data retention management")
+            return "Data retention management completed successfully"
+        else:
+            raise Exception(f"Script failed: {result.stderr}")
+            
     except Exception as e:
-        print(f"❌ Data retention failed: {e}")
-        # Don't fail the entire pipeline if retention fails
-        context['task_instance'].xcom_push(key='retention_action', value='cleanup_failed')
-        context['task_instance'].xcom_push(key='rows_deleted', value=0)
-        return f"Data retention failed: {str(e)}"
-
-def log_pipeline_summary(**context):
-    """
-    Log a comprehensive summary of the entire pipeline execution.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Summary message
-    """
-    
-    # Get execution date from Airflow context (Airflow 3.0 compatible)
-    execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
-    target_date = execution_date.date()
-    
-    # Get XCom data with safe defaults
-    task_instance = context['task_instance']
-    daily_file_path = task_instance.xcom_pull(key='daily_file_path', default='unknown')
-    action_taken = task_instance.xcom_pull(key='action_taken', default='unknown')
-    rows_loaded = task_instance.xcom_pull(key='rows_loaded', default=0)
-    retention_action = task_instance.xcom_pull(key='retention_action', default='unknown')
-    rows_deleted = task_instance.xcom_pull(key='rows_deleted', default=0)
-    
-    # Ensure we have safe values for formatting
-    if daily_file_path is None:
-        daily_file_path = 'unknown'
-    if action_taken is None:
-        action_taken = 'unknown'
-    if rows_loaded is None:
-        rows_loaded = 0
-    if retention_action is None:
-        retention_action = 'unknown'
-    if rows_deleted is None:
-        rows_deleted = 0
-    
-    summary = f"""
-    📊 Comprehensive Ad Campaign Pipeline Summary - {target_date}
-    ================================================================
-    
-    ✅ Pipeline completed successfully
-    📅 Date: {target_date}
-    🕐 Execution time: {execution_date}
-    
-    📁 Data Generation:
-    • File: {daily_file_path}
-    • 5,000 rows of realistic ad campaign data
-    
-    🗄️ Snowflake Loading:
-    • Action: {action_taken}
-    • Rows processed: {rows_loaded:,}
-    
-    🧹 Data Retention:
-    • Action: {retention_action}
-    • Rows deleted: {rows_deleted:,}
-    
-    📈 Raw Ad Platform Data:
-    • 5 platforms: Google, Facebook, LinkedIn, TikTok, Twitter
-    • 7 campaign types: brand_awareness, conversions, traffic, app_installs, lead_generation, retargeting, video_views
-    • 6 ad formats: search, display, video, social, shopping, remarketing
-    • Raw metrics: impressions, clicks, spend, conversions
-    • Geographic & device-specific performance
-    
-    🔄 Data Management:
-    • Daily incremental loading to Snowflake
-    • 90-day data retention policy (prevents infinite growth)
-    • Automatic cleanup of old local files and Snowflake data
-    • Clean separation of concerns with dedicated scripts
-    • Efficient data pipeline for portfolio demonstration
-    
-    Next steps:
-    1. Data is loaded and ready in Snowflake
-    2. Run dbt models to transform the data
-    3. Update dashboards with new data
-    
-    ================================================================
-    """
-    
-    print(summary)
-    return summary
+        print(f"❌ Error running data retention: {str(e)}")
+        raise e
 
 # Create the DAG
 dag = DAG(
     'ad_data_generator_dag',
     default_args=default_args,
-    description='Daily ad campaign data generation, Snowflake loading, and data retention pipeline',
+    description='Generate daily ad campaign data and load to Snowflake',
     schedule='0 9 * * *',  # Daily at 9:00 AM
     max_active_runs=1,
-    tags=['ad_campaigns', 'data_generation', 'snowflake', 'data_retention', 'portfolio'],
+    tags=['data-generation', 'snowflake', 'daily'],
 )
 
 # Define tasks
@@ -256,7 +176,7 @@ generate_data_task = PythonOperator(
     dag=dag,
 )
 
-snowflake_loader_task = PythonOperator(
+load_snowflake_task = PythonOperator(
     task_id='load_daily_to_snowflake',
     python_callable=load_daily_to_snowflake_task,
     dag=dag,
@@ -268,40 +188,14 @@ retention_task = PythonOperator(
     dag=dag,
 )
 
-log_summary_task = PythonOperator(
-    task_id='log_pipeline_summary',
-    python_callable=log_pipeline_summary,
-    dag=dag,
-)
-
 end_task = EmptyOperator(task_id='end', dag=dag)
 
-# Set task dependencies - Sequential execution
-start_task >> generate_data_task >> snowflake_loader_task >> retention_task >> log_summary_task >> end_task
+# Set task dependencies
+start_task >> generate_data_task >> load_snowflake_task >> retention_task >> end_task
 
 # Task documentation
-start_task.doc = "Start the comprehensive ad campaign pipeline"
-generate_data_task.doc = """
-Generates 5,000 rows of realistic fake ad campaign data for the current execution date.
-Data includes campaign metrics across Google, Facebook, LinkedIn, TikTok, and Twitter platforms.
-Features: campaign types, ad formats, device targeting, geographic performance, and raw metrics.
-Raw data format matches exactly what ad platforms like Google Ads and Facebook Ads send.
-"""
-
-snowflake_loader_task.doc = """
-Loads daily generated ad campaign data to Snowflake.
-Uses the dedicated load_daily_snowflake.py script for clean separation of concerns.
-Appends new data to the existing raw.ad_data table efficiently.
-"""
-
-retention_task.doc = """
-Runs data retention policies to prevent infinite data growth.
-Keeps only the last 90 days of data in both local files and Snowflake.
-"""
-
-log_summary_task.doc = """
-Logs a comprehensive summary of the entire pipeline execution including data generation,
-Snowflake loading actions, and next steps for the data engineering workflow.
-"""
-
-end_task.doc = "End the comprehensive ad campaign pipeline"
+start_task.doc = "Start daily ad data generation pipeline"
+generate_data_task.doc = "Generate 5000 rows of daily ad campaign data"
+load_snowflake_task.doc = "Load daily data to Snowflake with duplicate prevention"
+retention_task.doc = "Run data retention management (90-day policy)"
+end_task.doc = "Complete daily ad data generation pipeline"

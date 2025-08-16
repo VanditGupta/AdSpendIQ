@@ -1,8 +1,8 @@
 """
 Ad Campaign Analytics - dbt Transformation DAG
 
-This DAG runs dbt transformations to build the Kimball star schema.
-Runs every day at 10:00 AM (after data quality validation).
+This DAG runs dbt models to transform raw data into a complete star schema.
+Creates dimension tables, fact tables, and mart tables for analytics.
 
 Author: Vandit Gupta
 Date: August 15, 2025
@@ -12,30 +12,24 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.empty import EmptyOperator
-
-import sys
-import os
 import subprocess
-from pathlib import Path
-
-# Import our custom functions
-sys.path.append(str(Path(__file__).parent.parent))
+import os
 
 # Default arguments for the DAG
 default_args = {
     'owner': 'data_engineer',
-    'depends_on_past': True,  # Wait for previous day's validation
+    'depends_on_past': False,
     'start_date': datetime.now() - timedelta(days=1),
-    'email_on_failure': True,
+    'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 2,
-    'retry_delay': timedelta(minutes=15),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=10),
     'catchup': False,
 }
 
-def run_dbt_dependencies(**context):
+def run_dbt_debug(**context):
     """
-    Install dbt dependencies.
+    Run dbt debug to check configuration.
     
     Args:
         **context: Airflow context
@@ -44,85 +38,55 @@ def run_dbt_dependencies(**context):
         str: Success message
     """
     
-    print("📦 Installing dbt dependencies...")
-    
     try:
-        # Change to dbt directory
-        dbt_dir = Path(__file__).parent.parent / 'dbt'
+        print("🔧 Running dbt debug...")
         
-        # Run dbt deps
+        # Navigate to dbt directory and run debug
+        dbt_dir = os.path.join(os.path.dirname(__file__), '..', 'dbt')
         result = subprocess.run(
-            ['dbt', 'deps'],
-            cwd=dbt_dir,
+            ['dbt', 'debug'],
             capture_output=True,
             text=True,
-            env=dict(os.environ, **{
-                'SNOWFLAKE_ACCOUNT': os.getenv('SNOWFLAKE_ACCOUNT'),
-                'SNOWFLAKE_USER': os.getenv('SNOWFLAKE_USER'),
-                'SNOWFLAKE_PROGRAMMATIC_TOKEN': os.getenv('SNOWFLAKE_PROGRAMMATIC_TOKEN'),
-                'SNOWFLAKE_DATABASE': os.getenv('SNOWFLAKE_DATABASE'),
-                'SNOWFLAKE_SCHEMA': os.getenv('SNOWFLAKE_SCHEMA'),
-                'SNOWFLAKE_WAREHOUSE': os.getenv('SNOWFLAKE_WAREHOUSE'),
-            })
+            cwd=dbt_dir
         )
         
         if result.returncode == 0:
-            print("✅ dbt dependencies installed successfully")
-            return "dbt dependencies installed successfully"
+            print("✅ dbt debug successful")
+            return "dbt configuration is valid"
         else:
-            print(f"❌ dbt deps failed: {result.stderr}")
-            raise Exception(f"dbt deps failed: {result.stderr}")
+            raise Exception(f"dbt debug failed: {result.stderr}")
             
     except Exception as e:
-        print(f"❌ Error installing dbt dependencies: {str(e)}")
+        print(f"❌ Error running dbt debug: {str(e)}")
         raise e
 
 def run_dbt_models(**context):
     """
-    Run dbt models to build the Kimball star schema.
+    Run all dbt models to create the star schema.
     
     Args:
         **context: Airflow context
     
     Returns:
-        str: Success message with model count
+        str: Success message
     """
     
-    print("🏗️ Running dbt models...")
-    
     try:
-        # Change to dbt directory
-        dbt_dir = Path(__file__).parent.parent / 'dbt'
+        print("🏗️ Running dbt models to create star schema...")
         
-        # Run dbt run
+        # Navigate to dbt directory and run all models
+        dbt_dir = os.path.join(os.path.dirname(__file__), '..', 'dbt')
         result = subprocess.run(
             ['dbt', 'run'],
-            cwd=dbt_dir,
             capture_output=True,
             text=True,
-            env=dict(os.environ, **{
-                'SNOWFLAKE_ACCOUNT': os.getenv('SNOWFLAKE_ACCOUNT'),
-                'SNOWFLAKE_USER': os.getenv('SNOWFLAKE_USER'),
-                'SNOWFLAKE_PROGRAMMATIC_TOKEN': os.getenv('SNOWFLAKE_PROGRAMMATIC_TOKEN'),
-                'SNOWFLAKE_DATABASE': os.getenv('SNOWFLAKE_DATABASE'),
-                'SNOWFLAKE_SCHEMA': os.getenv('SNOWFLAKE_SCHEMA'),
-                'SNOWFLAKE_WAREHOUSE': os.getenv('SNOWFLAKE_WAREHOUSE'),
-            })
+            cwd=dbt_dir
         )
         
         if result.returncode == 0:
-            # Parse output to count models
-            output_lines = result.stdout.split('\n')
-            model_count = len([line for line in output_lines if 'PASS' in line])
-            
-            print(f"✅ dbt models completed successfully: {model_count} models")
-            
-            # Store results in XCom
-            context['task_instance'].xcom_push(key='models_built', value=model_count)
-            
-            return f"dbt models completed successfully: {model_count} models built"
+            print("✅ dbt models created successfully")
+            return "Star schema created successfully with all dimension, fact, and mart tables"
         else:
-            print(f"❌ dbt run failed: {result.stderr}")
             raise Exception(f"dbt run failed: {result.stderr}")
             
     except Exception as e:
@@ -137,45 +101,26 @@ def run_dbt_tests(**context):
         **context: Airflow context
     
     Returns:
-        str: Success message with test results
+        str: Success message
     """
     
-    print("🧪 Running dbt tests...")
-    
     try:
-        # Change to dbt directory
-        dbt_dir = Path(__file__).parent.parent / 'dbt'
+        print("🧪 Running dbt tests...")
         
-        # Run dbt test
+        # Navigate to dbt directory and run tests
+        dbt_dir = os.path.join(os.path.dirname(__file__), '..', 'dbt')
         result = subprocess.run(
             ['dbt', 'test'],
-            cwd=dbt_dir,
             capture_output=True,
             text=True,
-            env=dict(os.environ, **{
-                'SNOWFLAKE_ACCOUNT': os.getenv('SNOWFLAKE_ACCOUNT'),
-                'SNOWFLAKE_USER': os.getenv('SNOWFLAKE_USER'),
-                'SNOWFLAKE_PROGRAMMATIC_TOKEN': os.getenv('SNOWFLAKE_PROGRAMMATIC_TOKEN'),
-                'SNOWFLAKE_DATABASE': os.getenv('SNOWFLAKE_DATABASE'),
-                'SNOWFLAKE_SCHEMA': os.getenv('SNOWFLAKE_SCHEMA'),
-                'SNOWFLAKE_WAREHOUSE': os.getenv('SNOWFLAKE_WAREHOUSE'),
-            })
+            cwd=dbt_dir
         )
         
         if result.returncode == 0:
-            # Parse output to count tests
-            output_lines = result.stdout.split('\n')
-            test_count = len([line for line in output_lines if 'PASS' in line])
-            
-            print(f"✅ dbt tests completed successfully: {test_count} tests passed")
-            
-            # Store results in XCom
-            context['task_instance'].xcom_push(key='tests_passed', value=test_count)
-            
-            return f"dbt tests completed successfully: {test_count} tests passed"
+            print("✅ dbt tests passed")
+            return "All dbt tests passed successfully"
         else:
-            print(f"❌ dbt test failed: {result.stderr}")
-            raise Exception(f"dbt test failed: {result.stderr}")
+            raise Exception(f"dbt tests failed: {result.stderr}")
             
     except Exception as e:
         print(f"❌ Error running dbt tests: {str(e)}")
@@ -192,102 +137,44 @@ def generate_dbt_docs(**context):
         str: Success message
     """
     
-    print("📚 Generating dbt documentation...")
-    
     try:
-        # Change to dbt directory
-        dbt_dir = Path(__file__).parent.parent / 'dbt'
+        print("📚 Generating dbt documentation...")
         
-        # Run dbt docs generate
+        # Navigate to dbt directory and generate docs
+        dbt_dir = os.path.join(os.path.dirname(__file__), '..', 'dbt')
         result = subprocess.run(
             ['dbt', 'docs', 'generate'],
-            cwd=dbt_dir,
             capture_output=True,
             text=True,
-            env=dict(os.environ, **{
-                'SNOWFLAKE_ACCOUNT': os.getenv('SNOWFLAKE_ACCOUNT'),
-                'SNOWFLAKE_USER': os.getenv('SNOWFLAKE_USER'),
-                'SNOWFLAKE_PROGRAMMATIC_TOKEN': os.getenv('SNOWFLAKE_PROGRAMMATIC_TOKEN'),
-                'SNOWFLAKE_DATABASE': os.getenv('SNOWFLAKE_DATABASE'),
-                'SNOWFLAKE_SCHEMA': os.getenv('SNOWFLAKE_SCHEMA'),
-                'SNOWFLAKE_WAREHOUSE': os.getenv('SNOWFLAKE_WAREHOUSE'),
-            })
+            cwd=dbt_dir
         )
         
         if result.returncode == 0:
-            print("✅ dbt documentation generated successfully")
+            print("✅ dbt documentation generated")
             return "dbt documentation generated successfully"
         else:
-            print(f"❌ dbt docs generate failed: {result.stderr}")
-            raise Exception(f"dbt docs generate failed: {result.stderr}")
+            raise Exception(f"dbt docs generation failed: {result.stderr}")
             
     except Exception as e:
         print(f"❌ Error generating dbt docs: {str(e)}")
         raise e
 
-def log_dbt_summary(**context):
-    """
-    Log dbt transformation summary and trigger next DAG.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Summary message
-    """
-    
-    # Get execution date
-    execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
-    target_date = execution_date.date()
-    
-    # Get XCom data
-    task_instance = context['task_instance']
-    models_built = task_instance.xcom_pull(key='models_built', default=0)
-    tests_passed = task_instance.xcom_pull(key='tests_passed', default=0)
-    
-    summary = f"""
-    🏗️ dbt Transformation Summary - {target_date}
-    =============================================
-    
-    📅 Date: {target_date}
-    🕐 Execution time: {execution_date}
-    
-    📊 Transformation Results:
-    • Models built: {models_built}
-    • Tests passed: {tests_passed}
-    
-    🎯 Kimball Star Schema:
-    • Staging models (data cleaning)
-    • Dimension tables (platforms, geography, dates)
-    • Fact tables (ad performance metrics)
-    • Mart models (business intelligence)
-    
-    🔄 Next Steps:
-    • ✅ Proceed to analytics and testing
-    • 📚 Documentation available at dbt docs
-    
-    =============================================
-    """
-    
-    print(summary)
-    return summary
-
 # Create the DAG
 dag = DAG(
     'dbt_transformation_dag',
     default_args=default_args,
-    description='dbt transformation pipeline to build Kimball star schema',
-    schedule='0 10 * * *',  # Daily at 10:00 AM (after validation)
+    description='Run dbt models to create complete star schema',
+    schedule='0 10 * * *',  # Daily at 10:00 AM (after data loading)
     max_active_runs=1,
-    tags=['dbt', 'transformation', 'kimball', 'star_schema', 'portfolio'],
+    tags=['dbt', 'transformation', 'star-schema'],
 )
 
 # Define tasks
 start_task = EmptyOperator(task_id='start', dag=dag)
 
-deps_task = PythonOperator(
-    task_id='install_dbt_dependencies',
-    python_callable=run_dbt_dependencies,
+debug_task = PythonOperator(
+    task_id='run_dbt_debug',
+    python_callable=run_dbt_debug,
     dag=dag,
 )
 
@@ -309,24 +196,15 @@ docs_task = PythonOperator(
     dag=dag,
 )
 
-summary_task = PythonOperator(
-    task_id='log_dbt_summary',
-    python_callable=log_dbt_summary,
-    dag=dag,
-)
-
-
-
 end_task = EmptyOperator(task_id='end', dag=dag)
 
 # Set task dependencies
-start_task >> deps_task >> models_task >> tests_task >> docs_task >> summary_task >> end_task
+start_task >> debug_task >> models_task >> tests_task >> docs_task >> end_task
 
 # Task documentation
 start_task.doc = "Start dbt transformation pipeline"
-deps_task.doc = "Install dbt package dependencies"
-models_task.doc = "Run dbt models to build Kimball star schema"
+debug_task.doc = "Run dbt debug to validate configuration"
+models_task.doc = "Run all dbt models to create star schema"
 tests_task.doc = "Run dbt tests to validate data quality"
 docs_task.doc = "Generate dbt documentation"
-summary_task.doc = "Log transformation results and prepare for analytics"
 end_task.doc = "Complete dbt transformation pipeline"
