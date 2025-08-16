@@ -10,7 +10,7 @@ daily_summary AS (
         platform_id,
         geo_id,
         device_id,
-        campaign_type_id,
+        campaign_id,
         ad_format_id,
         
         -- Core metrics
@@ -72,7 +72,7 @@ daily_summary AS (
         
     FROM fact_data
     GROUP BY 
-        date_id, platform_id, geo_id, device_id, campaign_type_id, ad_format_id
+        date_id, platform_id, geo_id, device_id, campaign_id, ad_format_id
 ),
 
 final AS (

@@ -23,8 +23,14 @@ This project simulates a real-world **Ad Campaign Analytics** system, processing
 
 Our data architecture follows the **Kimball Star Schema** methodology, featuring:
 
-- **1 Fact Table**: `FACT_CAMPAIGN_PERFORMANCE` - Central hub for all metrics
-- **6 Dimension Tables**: Campaigns, Platforms, Geography, Devices, Time, Ad Formats
+- **1 Fact Table**: `fact_ad_performance` - Central hub for all metrics
+- **6 Dimension Tables**: Complete Kimball implementation with business logic
+  - **dim_campaigns**: Campaign details, objectives, budget tiers, status
+  - **dim_devices**: Device types, platforms, screen sizes, mobile classification
+  - **dim_ad_formats**: Ad formats, video/static classification, platform compatibility
+  - **dim_dates**: Date dimensions with calendar attributes
+  - **dim_geography**: Geographic markets and country data
+  - **dim_platforms**: Advertising platform information
 - **Optimized Performance**: Indexed foreign keys, denormalized structure
 - **Business Focus**: Aligned with marketing analytics requirements
 
@@ -70,7 +76,7 @@ python generate_star_schema.py
 | **Data Generation** | ✅ **COMPLETE** | Realistic ad campaign data with business logic |
 | **Airflow Orchestration** | ✅ **COMPLETE** | Daily pipeline with smart data management |
 | **Snowflake Integration** | ✅ **COMPLETE** | Cloud data warehouse with optimized loading |
-| **dbt Transformation** | ✅ **COMPLETE** | Kimball star schema with 4 marts |
+| **dbt Transformation** | ✅ **COMPLETE** | Complete Kimball star schema with 6 dimensions + 4 marts |
 | **Data Quality Testing** | ✅ **COMPLETE** | Great Expectations + PyTest suite |
 | **Business Intelligence** | ✅ **COMPLETE** | Portfolio showcase queries & analytics |
 | **Documentation** | ✅ **COMPLETE** | Auto-generated dbt docs & project docs |
@@ -180,6 +186,7 @@ ad_campaign_spend_tracker/
 - **GitHub Integration**: Mermaid diagrams for repositories
 - **Custom Generation**: Python script for modifications
 - **Complete Documentation**: Usage guides and examples
+- **6 Dimension Tables**: Full Kimball implementation with business logic
 
 ### **🎨 Qlik Sense Dashboard**
 - **Complete Setup Guide**: Step-by-step implementation

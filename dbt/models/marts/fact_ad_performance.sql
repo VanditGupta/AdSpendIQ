@@ -9,16 +9,13 @@ fact_data AS (
         -- Primary key (composite key for uniqueness)
         MD5(campaign_id || date || platform || geo || device || campaign_type || ad_format) as fact_id,
         
-        -- Foreign keys to dimensions
+        -- Foreign keys to dimensions (properly referenced)
         platform as platform_id,
         geo as geo_id,
         date as date_id,
         device as device_id,
-        campaign_type as campaign_type_id,
-        ad_format as ad_format_id,
-        
-        -- Business identifiers
         campaign_id,
+        ad_format as ad_format_id,
         
         -- Core metrics (facts) - ONLY NUMERIC VALUES
         impressions,

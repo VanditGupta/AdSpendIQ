@@ -12,7 +12,6 @@ campaign_summary AS (
         geo_id,
         date_id,
         device_id,
-        campaign_type_id,
         ad_format_id,
         
         -- Core metrics
@@ -76,7 +75,7 @@ campaign_summary AS (
         
     FROM fact_data
     GROUP BY 
-        campaign_id, platform_id, geo_id, date_id, device_id, campaign_type_id, ad_format_id
+        campaign_id, platform_id, geo_id, date_id, device_id, ad_format_id
 ),
 
 final AS (

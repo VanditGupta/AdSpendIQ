@@ -10,7 +10,7 @@ platform_performance AS (
         geo_id,
         date_id,
         device_id,
-        campaign_type_id,
+        campaign_id,
         ad_format_id,
         
         -- Core metrics
@@ -65,7 +65,7 @@ platform_performance AS (
         
     FROM fact_data
     GROUP BY 
-        platform_id, geo_id, date_id, device_id, campaign_type_id, ad_format_id
+        platform_id, geo_id, date_id, device_id, campaign_id, ad_format_id
 ),
 
 final AS (

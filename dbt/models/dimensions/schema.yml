@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_campaigns
+    description: "Dimension table containing campaign information and business context"
+    columns:
+      - name: campaign_id
+        description: "Unique identifier for each campaign"
+        tests:
+          - not_null
+          - unique
+      - name: campaign_name
+        description: "Human-readable name of the campaign"
+        tests:
+          - not_null
+      - name: campaign_type
+        description: "Type of campaign (e.g., brand awareness, conversions)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['brand_awareness', 'conversions', 'traffic', 'engagement', 'app_installs', 'lead_generation', 'sales']
+      - name: budget_amount
+        description: "Campaign budget in USD"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1000000
+
+  - name: dim_devices
+    description: "Dimension table containing device information and specifications"
+    columns:
+      - name: device_id
+        description: "Unique identifier for each device"
+        tests:
+          - not_null
+          - unique
+      - name: device_type
+        description: "Type of device (Mobile, Desktop, Tablet)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Mobile', 'Desktop', 'Tablet', 'Smart TV', 'Gaming Console']
+      - name: is_mobile
+        description: "Boolean flag indicating if device is mobile"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+  - name: dim_ad_formats
+    description: "Dimension table containing ad format specifications and metadata"
+    columns:
+      - name: ad_format_id
+        description: "Unique identifier for each ad format"
+        tests:
+          - not_null
+          - unique
+      - name: ad_format_type
+        description: "Type of ad format (Video, Image, Carousel, etc.)"
+        tests:
+          - not_null
+      - name: is_video
+        description: "Boolean flag indicating if format is video"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: file_size
+        description: "File size in bytes"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100000000
+
+  - name: dim_dates
+    description: "Dimension table containing date information and calendar attributes"
+    columns:
+      - name: date_id
+        description: "Unique identifier for each date"
+        tests:
+          - not_null
+          - unique
+      - name: full_date
+        description: "Full date in YYYY-MM-DD format"
+        tests:
+          - not_null
+
+  - name: dim_geography
+    description: "Dimension table containing geographic information and market data"
+    columns:
+      - name: geo_id
+        description: "Unique identifier for each geographic location"
+        tests:
+          - not_null
+          - unique
+      - name: country
+        description: "Country name"
+        tests:
+          - not_null
+
+  - name: dim_platforms
+    description: "Dimension table containing advertising platform information"
+    columns:
+      - name: platform_id
+        description: "Unique identifier for each platform"
+        tests:
+          - not_null
+          - unique
+      - name: platform_name
+        description: "Name of the advertising platform"
+        tests:
+          - not_null

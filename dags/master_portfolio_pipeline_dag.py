@@ -13,13 +13,14 @@ from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.providers.smtp.operators.smtp import EmailOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.sensors.external_task import ExternalTaskSensor
 
-import sys
 import os
-from pathlib import Path
+from dotenv import load_dotenv
 
-# Import our custom functions
-sys.path.append(str(Path(__file__).parent.parent))
+# Load environment variables
+load_dotenv()
 
 # Email configuration - read from environment variables
 EMAIL_RECIPIENTS = os.getenv('EMAIL_RECIPIENTS', 'admin@example.com').split(',')
@@ -86,205 +87,39 @@ def initialize_portfolio_pipeline(**context):
     
     return "Portfolio pipeline initialized successfully"
 
-def trigger_data_generation_phase(**context):
+def log_phase_completion(phase_name, **context):
     """
-    Trigger the data generation and loading phase.
+    Log completion of a pipeline phase.
     
     Args:
+        phase_name (str): Name of the completed phase
         **context: Airflow context
     
     Returns:
-        str: Trigger message
+        str: Completion message
     """
     
-    print("📊 Triggering Data Generation & Loading Phase...")
+    execution_date = context.get('logical_date') or context.get('execution_date') or datetime.now()
+    target_date = execution_date.date()
     
-    try:
-        # This will trigger the ad_data_generator_dag
-        return "Data generation phase triggered successfully"
-        
-    except Exception as e:
-        print(f"❌ Error triggering data generation: {str(e)}")
-        raise e
-
-def wait_for_data_loading(**context):
-    """
-    Wait for data loading to complete and log status.
+    completion_message = f"""
+    ✅ PHASE COMPLETED: {phase_name}
+    =============================================
     
-    Args:
-        **context: Airflow context
+    📅 Date: {target_date}
+    🕐 Completion time: {execution_date}
+    🎯 Phase: {phase_name}
     
-    Returns:
-        str: Status message
+    🚀 Proceeding to next phase...
+    =============================================
     """
     
-    print("⏳ Waiting for data loading to complete...")
+    print(completion_message)
     
-    # Simulate waiting (in real scenario, this would check DAG status)
-    import time
-    time.sleep(5)  # Simulate processing time
+    # Store phase completion in XCom
+    context['task_instance'].xcom_push(key=f'{phase_name.lower().replace(" ", "_")}_completion_time', value=str(execution_date))
     
-    return "Data loading phase completed - proceeding to validation"
-
-def trigger_validation_phase(**context):
-    """
-    Trigger the data quality validation phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Trigger message
-    """
-    
-    print("🔍 Triggering Data Quality Validation Phase...")
-    
-    try:
-        # This will trigger the data_quality_validation_dag
-        return "Data quality validation phase triggered successfully"
-        
-    except Exception as e:
-        print(f"❌ Error triggering validation: {str(e)}")
-        raise e
-
-def wait_for_validation(**context):
-    """
-    Wait for validation to complete and log status.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Status message
-    """
-    
-    print("⏳ Waiting for data quality validation to complete...")
-    
-    # Simulate waiting
-    import time
-    time.sleep(5)
-    
-    return "Data quality validation completed - proceeding to transformation"
-
-def trigger_transformation_phase(**context):
-    """
-    Trigger the dbt transformation phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Trigger message
-    """
-    
-    print("🏗️ Triggering dbt Transformation Phase...")
-    
-    try:
-        # This will trigger the dbt_transformation_dag
-        return "dbt transformation phase triggered successfully"
-        
-    except Exception as e:
-        print(f"❌ Error triggering transformation: {str(e)}")
-        raise e
-
-def wait_for_transformation(**context):
-        """
-        Wait for transformation to complete and log status.
-        
-        Args:
-            **context: Airflow context
-        
-        Returns:
-            str: Status message
-        """
-        
-        print("⏳ Waiting for dbt transformation to complete...")
-        
-        # Simulate waiting
-        import time
-        time.sleep(5)
-        
-        return "dbt transformation completed - proceeding to analytics"
-
-def trigger_analytics_phase(**context):
-    """
-    Trigger the analytics and testing phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Trigger message
-    """
-    
-    print("📈 Triggering Analytics & Testing Phase...")
-    
-    try:
-        # This will trigger the analytics_testing_dag
-        return "Analytics and testing phase triggered successfully"
-        
-    except Exception as e:
-        print(f"❌ Error triggering analytics: {str(e)}")
-        raise e
-
-def wait_for_analytics(**context):
-    """
-    Wait for analytics to complete and log status.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Status message
-    """
-    
-    print("⏳ Waiting for analytics and testing to complete...")
-    
-    # Simulate waiting
-    import time
-    time.sleep(5)
-    
-    return "Analytics and testing completed - proceeding to monitoring"
-
-def trigger_monitoring_phase(**context):
-    """
-    Trigger the final monitoring and alerting phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Trigger message
-    """
-    
-    print("🔍 Triggering Final Monitoring & Alerting Phase...")
-    
-    try:
-        # This will trigger the monitoring_alerting_dag
-        return "Monitoring and alerting phase triggered successfully"
-        
-    except Exception as e:
-        print(f"❌ Error triggering monitoring: {str(e)}")
-        raise e
-
-def wait_for_monitoring(**context):
-    """
-    Wait for monitoring to complete and log status.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Status message
-    """
-    
-    print("⏳ Waiting for monitoring and alerting to complete...")
-    
-    # Simulate waiting
-    import time
-    time.sleep(5)
-    
-    return "Monitoring and alerting completed - portfolio pipeline finished"
+    return f"{phase_name} completed successfully"
 
 def log_portfolio_completion(**context):
     """
@@ -311,18 +146,18 @@ def log_portfolio_completion(**context):
     ✅ ALL PHASES COMPLETED:
     
     1. 📊 Data Generation & Loading (9:00 AM)
-       • 5,000 daily ad campaign records
+       • 261,224 historical ad campaign records
        • Snowflake integration with duplicate prevention
        • Data retention management (90-day policy)
     
     2. 🔍 Data Quality Validation (9:30 AM)
        • Great Expectations validation suite
-       • 28 comprehensive data quality checks
+       • Comprehensive data quality checks
        • Schema, business logic, and value validation
     
     3. 🏗️ dbt Transformation (10:00 AM)
        • Kimball star schema implementation
-       • Staging, dimension, fact, and mart models
+       • 6 dimension tables + 1 fact table + 4 mart tables
        • Automated testing and documentation
     
     4. 📈 Analytics & Testing (11:00 AM)
@@ -511,7 +346,7 @@ dag = DAG(
     description='Master DAG orchestrating the complete Ad Campaign Analytics portfolio pipeline',
     schedule='0 8 * * *',  # Daily at 8:00 AM (before other DAGs)
     max_active_runs=1,
-    tags=['master', 'orchestration', 'portfolio', 'pipeline', 'portfolio'],
+    tags=['master', 'orchestration', 'portfolio', 'pipeline'],
 )
 
 # Define tasks
@@ -523,73 +358,7 @@ init_task = PythonOperator(
     dag=dag,
 )
 
-trigger_data_task = PythonOperator(
-    task_id='trigger_data_generation_phase',
-    python_callable=trigger_data_generation_phase,
-    dag=dag,
-)
-
-wait_data_task = PythonOperator(
-    task_id='wait_for_data_loading',
-    python_callable=wait_for_data_loading,
-    dag=dag,
-)
-
-trigger_validation_task = PythonOperator(
-    task_id='trigger_validation_phase',
-    python_callable=trigger_validation_phase,
-    dag=dag,
-)
-
-wait_validation_task = PythonOperator(
-    task_id='wait_for_validation',
-    python_callable=wait_for_validation,
-    dag=dag,
-)
-
-trigger_transformation_task = PythonOperator(
-    task_id='trigger_transformation_phase',
-    python_callable=trigger_transformation_phase,
-    dag=dag,
-)
-
-wait_transformation_task = PythonOperator(
-    task_id='wait_for_transformation',
-    python_callable=wait_for_transformation,
-    dag=dag,
-)
-
-trigger_analytics_task = PythonOperator(
-    task_id='trigger_analytics_phase',
-    python_callable=trigger_analytics_phase,
-    dag=dag,
-)
-
-wait_analytics_task = PythonOperator(
-    task_id='wait_for_analytics',
-    python_callable=wait_for_analytics,
-    dag=dag,
-)
-
-trigger_monitoring_task = PythonOperator(
-    task_id='trigger_monitoring_phase',
-    python_callable=trigger_monitoring_phase,
-    dag=dag,
-)
-
-wait_monitoring_task = PythonOperator(
-    task_id='wait_for_monitoring',
-    python_callable=wait_for_monitoring,
-    dag=dag,
-)
-
-completion_task = PythonOperator(
-    task_id='log_portfolio_completion',
-    python_callable=log_portfolio_completion,
-    dag=dag,
-)
-
-# Email alert tasks
+# Email alert for pipeline start
 start_alert_task = PythonOperator(
     task_id='send_pipeline_start_alert',
     python_callable=send_pipeline_start_alert,
@@ -604,6 +373,129 @@ start_email_task = EmailOperator(
     dag=dag,
 )
 
+# Phase 1: Data Generation & Loading
+trigger_data_task = TriggerDagRunOperator(
+    task_id='trigger_data_generation_loading',
+    trigger_dag_id='data_generation_loading_dag',
+    dag=dag,
+)
+
+wait_data_task = ExternalTaskSensor(
+    task_id='wait_for_data_generation_loading',
+    external_dag_id='data_generation_loading_dag',
+    external_task_id='end',
+    timeout=3600,  # 1 hour timeout
+    mode='reschedule',
+    dag=dag,
+)
+
+data_complete_task = PythonOperator(
+    task_id='log_data_phase_completion',
+    python_callable=log_phase_completion,
+    op_kwargs={'phase_name': 'Data Generation & Loading'},
+    dag=dag,
+)
+
+# Phase 2: Data Quality Validation
+trigger_validation_task = TriggerDagRunOperator(
+    task_id='trigger_data_quality_validation',
+    trigger_dag_id='data_quality_validation_dag',
+    dag=dag,
+)
+
+wait_validation_task = ExternalTaskSensor(
+    task_id='wait_for_data_quality_validation',
+    external_dag_id='data_quality_validation_dag',
+    external_task_id='end',
+    timeout=1800,  # 30 minutes timeout
+    mode='reschedule',
+    dag=dag,
+)
+
+validation_complete_task = PythonOperator(
+    task_id='log_validation_phase_completion',
+    python_callable=log_phase_completion,
+    op_kwargs={'phase_name': 'Data Quality Validation'},
+    dag=dag,
+)
+
+# Phase 3: dbt Transformation
+trigger_transformation_task = TriggerDagRunOperator(
+    task_id='trigger_dbt_transformation',
+    trigger_dag_id='dbt_transformation_dag',
+    dag=dag,
+)
+
+wait_transformation_task = ExternalTaskSensor(
+    task_id='wait_for_dbt_transformation',
+    external_dag_id='dbt_transformation_dag',
+    external_task_id='end',
+    timeout=3600,  # 1 hour timeout
+    mode='reschedule',
+    dag=dag,
+)
+
+transformation_complete_task = PythonOperator(
+    task_id='log_transformation_phase_completion',
+    python_callable=log_phase_completion,
+    op_kwargs={'phase_name': 'dbt Transformation'},
+    dag=dag,
+)
+
+# Phase 4: Analytics & Testing
+trigger_analytics_task = TriggerDagRunOperator(
+    task_id='trigger_analytics_testing',
+    trigger_dag_id='analytics_testing_dag',
+    dag=dag,
+)
+
+wait_analytics_task = ExternalTaskSensor(
+    task_id='wait_for_analytics_testing',
+    external_dag_id='analytics_testing_dag',
+    external_task_id='end',
+    timeout=1800,  # 30 minutes timeout
+    mode='reschedule',
+    dag=dag,
+)
+
+analytics_complete_task = PythonOperator(
+    task_id='log_analytics_phase_completion',
+    python_callable=log_phase_completion,
+    op_kwargs={'phase_name': 'Analytics & Testing'},
+    dag=dag,
+)
+
+# Phase 5: Monitoring & Alerting
+trigger_monitoring_task = TriggerDagRunOperator(
+    task_id='trigger_monitoring_alerting',
+    trigger_dag_id='monitoring_alerting_dag',
+    dag=dag,
+)
+
+wait_monitoring_task = ExternalTaskSensor(
+    task_id='wait_for_monitoring_alerting',
+    external_dag_id='monitoring_alerting_dag',
+    external_task_id='end',
+    timeout=1800,  # 30 minutes timeout
+    mode='reschedule',
+    dag=dag,
+)
+
+monitoring_complete_task = PythonOperator(
+    task_id='log_monitoring_phase_completion',
+    python_callable=log_phase_completion,
+    op_kwargs={'phase_name': 'Monitoring & Alerting'},
+    dag=dag,
+)
+
+# Final completion logging
+completion_task = PythonOperator(
+    task_id='log_portfolio_completion',
+    python_callable=log_portfolio_completion,
+    dag=dag,
+)
+
+# Email alert for pipeline completion
 completion_alert_task = PythonOperator(
     task_id='send_pipeline_completion_alert',
     python_callable=send_pipeline_completion_alert,
@@ -620,25 +512,30 @@ completion_email_task = EmailOperator(
 
 end_task = EmptyOperator(task_id='end', dag=dag)
 
-# Set task dependencies - Sequential workflow with email alerts
-start_task >> init_task >> start_alert_task >> start_email_task >> trigger_data_task >> wait_data_task >> trigger_validation_task >> wait_validation_task >> trigger_transformation_task >> wait_transformation_task >> trigger_analytics_task >> wait_analytics_task >> trigger_monitoring_task >> wait_monitoring_task >> completion_task >> completion_alert_task >> completion_email_task >> end_task
+# Set task dependencies - Sequential workflow with proper DAG triggering
+start_task >> init_task >> start_alert_task >> start_email_task >> trigger_data_task >> wait_data_task >> data_complete_task >> trigger_validation_task >> wait_validation_task >> validation_complete_task >> trigger_transformation_task >> wait_transformation_task >> transformation_complete_task >> trigger_analytics_task >> wait_analytics_task >> analytics_complete_task >> trigger_monitoring_task >> wait_monitoring_task >> monitoring_complete_task >> completion_task >> completion_alert_task >> completion_email_task >> end_task
 
 # Task documentation
 start_task.doc = "Start master portfolio pipeline orchestration"
 init_task.doc = "Initialize portfolio pipeline and log start"
-trigger_data_task.doc = "Trigger data generation and loading phase"
-wait_data_task.doc = "Wait for data loading to complete"
-trigger_validation_task.doc = "Trigger data quality validation phase"
-wait_validation_task.doc = "Wait for validation to complete"
-trigger_transformation_task.doc = "Trigger dbt transformation phase"
-wait_transformation_task.doc = "Wait for transformation to complete"
-trigger_analytics_task.doc = "Trigger analytics and testing phase"
-wait_analytics_task.doc = "Wait for analytics to complete"
-trigger_monitoring_task.doc = "Trigger final monitoring and alerting phase"
-wait_monitoring_task.doc = "Wait for monitoring to complete"
-completion_task.doc = "Log portfolio pipeline completion and success"
 start_alert_task.doc = "Prepare pipeline start email alert content"
 start_email_task.doc = "Send pipeline start notification email"
+trigger_data_task.doc = "Trigger data generation and loading DAG"
+wait_data_task.doc = "Wait for data generation and loading DAG to complete"
+data_complete_task.doc = "Log completion of data generation and loading phase"
+trigger_validation_task.doc = "Trigger data quality validation DAG"
+wait_validation_task.doc = "Wait for data quality validation DAG to complete"
+validation_complete_task.doc = "Log completion of data quality validation phase"
+trigger_transformation_task.doc = "Trigger dbt transformation DAG"
+wait_transformation_task.doc = "Wait for dbt transformation DAG to complete"
+transformation_complete_task.doc = "Log completion of dbt transformation phase"
+trigger_analytics_task.doc = "Trigger analytics and testing DAG"
+wait_analytics_task.doc = "Wait for analytics and testing DAG to complete"
+analytics_complete_task.doc = "Log completion of analytics and testing phase"
+trigger_monitoring_task.doc = "Trigger monitoring and alerting DAG"
+wait_monitoring_task.doc = "Wait for monitoring and alerting DAG to complete"
+monitoring_complete_task.doc = "Log completion of monitoring and alerting phase"
+completion_task.doc = "Log portfolio pipeline completion and success"
 completion_alert_task.doc = "Prepare pipeline completion email alert content"
 completion_email_task.doc = "Send pipeline completion notification email"
 end_task.doc = "Complete master portfolio pipeline orchestration"
