@@ -111,7 +111,7 @@ dag = DAG(
     'ad_data_generator_dag',
     default_args=default_args,
     description='Daily generation of fake ad campaign data',
-    schedule_interval='0 9 * * *',  # Daily at 9:00 AM
+    schedule='0 9 * * *',  # Daily at 9:00 AM (schedule_interval deprecated in Airflow 3.0)
     max_active_runs=1,
     tags=['ad_campaigns', 'data_generation', 'portfolio'],
 )
