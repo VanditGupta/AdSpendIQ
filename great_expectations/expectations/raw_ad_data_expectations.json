@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "great_expectations_version": "1.5.8",
+    "expectation_suite_name": "raw_ad_data_expectations",
+    "data_asset_type": "Dataset",
+    "notes": {
+      "content": [
+        "Data quality expectations for raw ad campaign data",
+        "Validates business rules and data integrity",
+        "Ensures data meets requirements for downstream processing"
+      ],
+      "format": "markdown"
+    }
+  },
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": [
+          "campaign_id",
+          "platform",
+          "date",
+          "geo",
+          "device",
+          "campaign_type",
+          "ad_format",
+          "impressions",
+          "clicks",
+          "spend_usd",
+          "conversions"
+        ]
+      },
+      "meta": {
+        "notes": {
+          "content": "Ensures all required columns are present in correct order",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1000,
+        "max_value": 10000000
+      },
+      "meta": {
+        "notes": {
+          "content": "Ensures reasonable data volume (not empty, not excessive)",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "campaign_id"
+      },
+      "meta": {
+        "notes": {
+          "content": "Campaign IDs must be unique for proper tracking",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "campaign_id"
+      },
+      "meta": {
+        "notes": {
+          "content": "Campaign ID is required for all records",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "platform",
+        "value_set": ["Google", "Facebook", "LinkedIn", "TikTok", "Twitter"]
+      },
+      "meta": {
+        "notes": {
+          "content": "Platform must be one of the supported ad platforms",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "geo",
+        "value_set": ["US", "CA", "GB", "DE", "FR", "AU", "JP", "IN", "BR", "MX", "NL", "IT", "ES", "SE"]
+      },
+      "meta": {
+        "notes": {
+          "content": "Geography must be one of the supported country codes",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "device",
+        "value_set": ["mobile", "desktop", "tablet"]
+      },
+      "meta": {
+        "notes": {
+          "content": "Device must be one of the supported device types",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "campaign_type",
+        "value_set": ["brand_awareness", "conversions", "traffic", "app_installs", "lead_generation", "retargeting", "video_views"]
+      },
+      "meta": {
+        "notes": {
+          "content": "Campaign type must be one of the supported objectives",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "ad_format",
+        "value_set": ["search", "display", "video", "social", "shopping", "remarketing"]
+      },
+      "meta": {
+        "notes": {
+          "content": "Ad format must be one of the supported formats",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "impressions",
+        "min_value": 0,
+        "max_value": 100000000
+      },
+      "meta": {
+        "notes": {
+          "content": "Impressions must be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "clicks",
+        "min_value": 0,
+        "max_value": 10000000
+      },
+      "meta": {
+        "notes": {
+          "content": "Clicks must be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "spend_usd",
+        "min_value": 0,
+        "max_value": 1000000
+      },
+      "meta": {
+        "notes": {
+          "content": "Spend must be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "conversions",
+        "min_value": 0,
+        "max_value": 100000
+      },
+      "meta": {
+        "notes": {
+          "content": "Conversions must be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "date",
+        "min_value": "2024-01-01",
+        "max_value": "2025-12-31"
+      },
+      "meta": {
+        "notes": {
+          "content": "Dates must be within reasonable range",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_pair_values_A_to_be_greater_than_B",
+      "kwargs": {
+        "column_A": "impressions",
+        "column_B": "clicks"
+      },
+      "meta": {
+        "notes": {
+          "content": "Impressions should always be greater than or equal to clicks",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_pair_values_A_to_be_greater_than_B",
+      "kwargs": {
+        "column_A": "clicks",
+        "column_B": "conversions"
+      },
+      "meta": {
+        "notes": {
+          "content": "Clicks should always be greater than or equal to conversions",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "ctr",
+        "min_value": 0,
+        "max_value": 1
+      },
+      "meta": {
+        "notes": {
+          "content": "CTR should be between 0 and 1 (0% to 100%)",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "cpc",
+        "min_value": 0,
+        "max_value": 100
+      },
+      "meta": {
+        "notes": {
+          "content": "CPC should be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "cvr",
+        "min_value": 0,
+        "max_value": 1
+      },
+      "meta": {
+        "notes": {
+          "content": "CVR should be between 0 and 1 (0% to 100%)",
+          "format": "markdown"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "roas",
+        "min_value": 0,
+        "max_value": 10
+      },
+      "meta": {
+        "notes": {
+          "content": "ROAS should be non-negative and reasonable",
+          "format": "markdown"
+        }
+      }
+    }
+  ]
+}
