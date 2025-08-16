@@ -1,0 +1,646 @@
+Ad Campaign Analytics Testing Report
+============================================================
+Generated: 2025-08-16 05:07:52
+
+📊 PORTFOLIO QUERIES RESULTS
+========================================
+Portfolio showcase queries completed successfully
+
+Output:
+🚀 Portfolio Showcase Queries Runner
+==================================================
+✅ Connected to Snowflake successfully!
+
+============================================================
+🔍 1. Executive Summary - Top Level KPIs
+============================================================
+📊 Results: 1 rows
+
+    METRIC_CATEGORY  TOTAL_IMPRESSIONS  TOTAL_CLICKS  TOTAL_SPEND_USD  TOTAL_CONVERSIONS OVERALL_CTR  OVERALL_CPC OVERALL_CVR  OVERALL_ROAS
+Overall Performance         5173305242      64991535     123967133.59            1689688      0.0126         1.91      0.0260        0.0136
+
+============================================================
+🔍 2. Platform Performance Analysis
+============================================================
+📊 Results: 5 rows
+
+PLATFORM_NAME PLATFORM_CATEGORY PERFORMANCE_TIER  CAMPAIGN_COUNT  TOTAL_IMPRESSIONS  TOTAL_SPEND_USD PLATFORM_CTR  PLATFORM_CPC  PLATFORM_ROAS
+       Google             Major           Tier 1            3744         2956408952      71826702.48       0.0139          1.74         0.0161
+     LinkedIn           Growing           Tier 2            3604          464471557      24801031.38       0.0079          6.77         0.0056
+     Facebook             Major           Tier 1            3715         1206373229      19978257.58       0.0118          1.40         0.0154
+       TikTok           Growing           Tier 2            3436          415005050       5519594.65       0.0115          1.16         0.0126
+      Twitter          Emerging           Tier 3            2977          131046454       1841547.50       0.0087          1.62         0.0103
+
+============================================================
+🔍 3. Geographic Performance Insights
+============================================================
+📊 Results: 10 rows
+
+  COUNTRY_NAME     CONTINENT MARKET_TYPE  CAMPAIGN_COUNT  TOTAL_IMPRESSIONS  TOTAL_SPEND_USD GEO_CTR  GEO_ROAS
+ United States North America   Developed            3734         2197934729      68258925.88  0.0125    0.0106
+        Canada North America   Developed            3278          385676942       8048875.36  0.0126    0.0157
+United Kingdom        Europe   Developed            3206          342519600       7077606.87  0.0125    0.0157
+       Germany        Europe   Developed            3110          295738656       6145716.73  0.0126    0.0156
+        France        Europe   Developed            2968          240417196       4964214.06  0.0125    0.0156
+     Australia  Asia-Pacific   Developed            2861          200501324       4193277.93  0.0126    0.0156
+         Japan  Asia-Pacific   Developed            2788          195394270       4034039.60  0.0127    0.0161
+         India          Asia    Emerging            3299          306040734       3829563.28  0.0127    0.0260
+         Spain        Europe  Developing            2543          149914149       3120844.89  0.0127    0.0159
+   Netherlands        Europe  Developing            2537          146453094       3028799.21  0.0125    0.0157
+
+============================================================
+🔍 4. Time-Based Trend Analysis
+============================================================
+❌ Query failed: 002024 (42601): SQL compilation error:
+[D.MONTH] is not a valid order by expression
+
+============================================================
+🔍 5. Top Performing Campaigns
+============================================================
+📊 Results: 10 rows
+
+                      CAMPAIGN_ID PLATFORM_NAME COUNTRY_NAME  CAMPAIGN_IMPRESSIONS  CAMPAIGN_SPEND CAMPAIGN_CTR  CAMPAIGN_ROAS  CAMPAIGN_EFFECTIVENESS
+Holiday_Management_Conversion_187        Google        India                 21923          987.52       0.0352         0.0456                    63.0
+        Memorial_Church_Lead_0574      LinkedIn       Mexico                 26354          503.56       0.0079         0.0298                    63.0
+            Memorial_Air_App_0942      LinkedIn       Mexico                 13150          252.74       0.0083         0.0317                    63.0
+        Holiday_Show_Retarget_281        Google       Sweden                 52411         2093.42       0.0218         0.0306                    62.0
+                Q2_Fall_Brand_036        Google      Germany                 40133         1911.90       0.0253         0.0293                    62.0
+     Thanksgiving_Look_Brand_0406        Google  Netherlands                 32361         1893.39       0.0344         0.0338                    62.0
+       Spring_Your_Conversion_269        Google  Netherlands                 47625         1791.02       0.0186         0.0285                    62.0
+ BackToSchool_Guy_Conversion_0057        Google        Spain                 23193         1530.22       0.0329         0.0281                    62.0
+         Winter_Mother_Brand_0851        Google  Netherlands                 29433         1495.50       0.0318         0.0354                    62.0
+   Christmas_Source_Retarget_1289        Google        Italy                 33186         1452.99       0.0214         0.0275                    62.0
+
+============================================================
+🎉 Portfolio Showcase Complete!
+============================================================
+✅ Snowflake connection closed
+
+🧪 DATA TESTS RESULTS
+==============================
+Data tests completed with some failures (continuing pipeline)
+
+Output:
+[0m09:07:24  Running with dbt=1.10.9
+[0m09:07:24  Registered adapter: snowflake=1.10.0
+[0m09:07:25  [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 2 unused configuration paths:
+- models.ad_campaign_analytics.intermediate
+- seeds.ad_campaign_analytics
+[0m09:07:25  Found 11 models, 46 data tests, 1 source, 882 macros
+[0m09:07:25  
+[0m09:07:25  Concurrency: 4 threads (target='dev')
+[0m09:07:25  
+[0m09:07:27  1 of 46 START test accepted_values_dim_ad_formats_is_video__True__False ........ [RUN]
+[0m09:07:27  2 of 46 START test accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales  [RUN]
+[0m09:07:27  3 of 46 START test accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console  [RUN]
+[0m09:07:27  4 of 46 START test accepted_values_dim_devices_is_mobile__True__False .......... [RUN]
+[0m09:07:29  3 of 46 WARN 3 accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console  [[33mWARN 3[0m in 2.12s]
+[0m09:07:29  4 of 46 PASS accepted_values_dim_devices_is_mobile__True__False ................ [[32mPASS[0m in 2.12s]
+[0m09:07:29  1 of 46 PASS accepted_values_dim_ad_formats_is_video__True__False .............. [[32mPASS[0m in 2.12s]
+[0m09:07:29  5 of 46 START test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0  [RUN]
+[0m09:07:29  6 of 46 START test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0  [RUN]
+[0m09:07:29  7 of 46 START test not_null_dim_ad_formats_ad_format_id ........................ [RUN]
+[0m09:07:29  2 of 46 WARN 2 accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales  [[33mWARN 2[0m in 2.16s]
+[0m09:07:29  8 of 46 START test not_null_dim_ad_formats_ad_format_type ...................... [RUN]
+[0m09:07:30  5 of 46 ERROR dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 .. [[31mERROR[0m in 0.92s]
+[0m09:07:30  6 of 46 ERROR dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 . [[31mERROR[0m in 0.92s]
+[0m09:07:30  9 of 46 START test not_null_dim_ad_formats_file_size ........................... [RUN]
+[0m09:07:30  10 of 46 START test not_null_dim_ad_formats_is_video ........................... [RUN]
+[0m09:07:31  9 of 46 ERROR not_null_dim_ad_formats_file_size ................................ [[31mERROR[0m in 0.73s]
+[0m09:07:31  11 of 46 START test not_null_dim_campaigns_budget_amount ....................... [RUN]
+[0m09:07:31  8 of 46 PASS not_null_dim_ad_formats_ad_format_type ............................ [[32mPASS[0m in 1.67s]
+[0m09:07:31  12 of 46 START test not_null_dim_campaigns_campaign_id ......................... [RUN]
+[0m09:07:32  7 of 46 PASS not_null_dim_ad_formats_ad_format_id .............................. [[32mPASS[0m in 2.15s]
+[0m09:07:32  13 of 46 START test not_null_dim_campaigns_campaign_name ....................... [RUN]
+[0m09:07:32  10 of 46 PASS not_null_dim_ad_formats_is_video ................................. [[32mPASS[0m in 1.38s]
+[0m09:07:32  14 of 46 START test not_null_dim_campaigns_campaign_type ....................... [RUN]
+[0m09:07:32  11 of 46 ERROR not_null_dim_campaigns_budget_amount ............................ [[31mERROR[0m in 0.84s]
+[0m09:07:32  15 of 46 START test not_null_dim_dates_date_id ................................. [RUN]
+[0m09:07:32  13 of 46 ERROR not_null_dim_campaigns_campaign_name ............................ [[31mERROR[0m in 0.86s]
+[0m09:07:32  16 of 46 START test not_null_dim_dates_full_date ............................... [RUN]
+[0m09:07:33  12 of 46 PASS not_null_dim_campaigns_campaign_id ............................... [[32mPASS[0m in 1.49s]
+[0m09:07:33  17 of 46 START test not_null_dim_devices_device_id ............................. [RUN]
+[0m09:07:33  16 of 46 ERROR not_null_dim_dates_full_date .................................... [[31mERROR[0m in 0.84s]
+[0m09:07:33  18 of 46 START test not_null_dim_devices_device_type ........................... [RUN]
+[0m09:07:33  14 of 46 PASS not_null_dim_campaigns_campaign_type ............................. [[32mPASS[0m in 1.56s]
+[0m09:07:33  15 of 46 PASS not_null_dim_dates_date_id ....................................... [[32mPASS[0m in 1.37s]
+[0m09:07:33  19 of 46 START test not_null_dim_devices_is_mobile ............................. [RUN]
+[0m09:07:33  20 of 46 START test not_null_dim_geography_country ............................. [RUN]
+[0m09:07:34  17 of 46 PASS not_null_dim_devices_device_id ................................... [[32mPASS[0m in 1.44s]
+[0m09:07:34  21 of 46 START test not_null_dim_geography_geo_id .............................. [RUN]
+[0m09:07:35  20 of 46 ERROR not_null_dim_geography_country .................................. [[31mERROR[0m in 1.31s]
+[0m09:07:35  22 of 46 START test not_null_dim_platforms_platform_id ......................... [RUN]
+[0m09:07:35  19 of 46 PASS not_null_dim_devices_is_mobile ................................... [[32mPASS[0m in 1.55s]
+[0m09:07:35  23 of 46 START test not_null_dim_platforms_platform_name ....................... [RUN]
+[0m09:07:35  18 of 46 PASS not_null_dim_devices_device_type ................................. [[32mPASS[0m in 1.79s]
+[0m09:07:35  24 of 46 START test source_accepted_values_raw_ad_data_ad_format__search__display__video__social__shopping__remarketing  [RUN]
+[0m09:07:36  21 of 46 PASS not_null_dim_geography_geo_id .................................... [[32mPASS[0m in 1.50s]
+[0m09:07:36  25 of 46 START test source_accepted_values_raw_ad_data_campaign_type__brand_awareness__conversions__traffic__app_installs__lead_generation__retargeting__video_views  [RUN]
+[0m09:07:36  22 of 46 PASS not_null_dim_platforms_platform_id ............................... [[32mPASS[0m in 1.56s]
+[0m09:07:36  26 of 46 START test source_accepted_values_raw_ad_data_device__mobile__desktop__tablet  [RUN]
+[0m09:07:36  23 of 46 PASS not_null_dim_platforms_platform_name ............................. [[32mPASS[0m in 1.46s]
+[0m09:07:36  27 of 46 START test source_accepted_values_raw_ad_data_geo__US__CA__GB__DE__FR__AU__JP__IN__BR__MX__NL__IT__ES__SE  [RUN]
+[0m09:07:37  24 of 46 PASS source_accepted_values_raw_ad_data_ad_format__search__display__video__social__shopping__remarketing  [[32mPASS[0m in 1.60s]
+[0m09:07:37  28 of 46 START test source_accepted_values_raw_ad_data_platform__Google__Facebook__LinkedIn__TikTok__Twitter  [RUN]
+[0m09:07:37  25 of 46 PASS source_accepted_values_raw_ad_data_campaign_type__brand_awareness__conversions__traffic__app_installs__lead_generation__retargeting__video_views  [[32mPASS[0m in 1.34s]
+[0m09:07:37  29 of 46 START test source_not_null_raw_ad_data_ad_format ...................... [RUN]
+[0m09:07:37  26 of 46 PASS source_accepted_values_raw_ad_data_device__mobile__desktop__tablet  [[32mPASS[0m in 1.36s]
+[0m09:07:37  30 of 46 START test source_not_null_raw_ad_data_campaign_id .................... [RUN]
+[0m09:07:38  27 of 46 PASS source_accepted_values_raw_ad_data_geo__US__CA__GB__DE__FR__AU__JP__IN__BR__MX__NL__IT__ES__SE  [[32mPASS[0m in 1.43s]
+[0m09:07:38  31 of 46 START test source_not_null_raw_ad_data_campaign_type .................. [RUN]
+[0m09:07:38  28 of 46 PASS source_accepted_values_raw_ad_data_platform__Google__Facebook__LinkedIn__TikTok__Twitter  [[32mPASS[0m in 1.63s]
+[0m09:07:38  32 of 46 START test source_not_null_raw_ad_data_clicks ......................... [RUN]
+[0m09:07:38  29 of 46 PASS source_not_null_raw_ad_data_ad_format ............................ [[32mPASS[0m in 1.52s]
+[0m09:07:38  33 of 46 START test source_not_null_raw_ad_data_conversions .................... [RUN]
+[0m09:07:39  30 of 46 PASS source_not_null_raw_ad_data_campaign_id .......................... [[32mPASS[0m in 1.44s]
+[0m09:07:39  34 of 46 START test source_not_null_raw_ad_data_date ........................... [RUN]
+[0m09:07:39  31 of 46 PASS source_not_null_raw_ad_data_campaign_type ........................ [[32mPASS[0m in 1.25s]
+[0m09:07:39  35 of 46 START test source_not_null_raw_ad_data_device ......................... [RUN]
+[0m09:07:40  33 of 46 PASS source_not_null_raw_ad_data_conversions .......................... [[32mPASS[0m in 1.69s]
+[0m09:07:40  36 of 46 START test source_not_null_raw_ad_data_geo ............................ [RUN]
+[0m09:07:41  32 of 46 PASS source_not_null_raw_ad_data_clicks ............................... [[32mPASS[0m in 2.33s]
+[0m09:07:41  37 of 46 START test source_not_null_raw_ad_data_impressions .................... [RUN]
+[0m09:07:41  34 of 46 PASS source_not_null_raw_ad_data_date ................................. [[32mPASS[0m in 2.04s]
+[0m09:07:41  38 of 46 START test source_not_null_raw_ad_data_platform ....................... [RUN]
+[0m09:07:41  35 of 46 PASS source_not_null_raw_ad_data_device ............................... [[32mPASS[0m in 2.16s]
+[0m09:07:41  39 of 46 START test source_not_null_raw_ad_data_spend_usd ...................... [RUN]
+[0m09:07:42  36 of 46 PASS source_not_null_raw_ad_data_geo .................................. [[32mPASS[0m in 1.93s]
+[0m09:07:42  40 of 46 START test source_unique_raw_ad_data_campaign_id ...................... [RUN]
+[0m09:07:42  37 of 46 PASS source_not_null_raw_ad_data_impressions .......................... [[32mPASS[0m in 1.53s]
+[0m09:07:42  41 of 46 START test unique_dim_ad_formats_ad_format_id ......................... [RUN]
+[0m09:07:42  38 of 46 PASS source_not_null_raw_ad_data_platform ............................. [[32mPASS[0m in 1.38s]
+[0m09:07:42  42 of 46 START test unique_dim_campaigns_campaign_id ........................... [RUN]
+[0m09:07:43  39 of 46 PASS source_not_null_raw_ad_data_spend_usd ............................ [[32mPASS[0m in 1.56s]
+[0m09:07:43  43 of 46 START test unique_dim_dates_date_id ................................... [RUN]
+[0m09:07:44  40 of 46 WARN 4016 source_unique_raw_ad_data_campaign_id ....................... [[33mWARN 4016[0m in 1.66s]
+[0m09:07:44  44 of 46 START test unique_dim_devices_device_id ............................... [RUN]
+[0m09:07:44  41 of 46 PASS unique_dim_ad_formats_ad_format_id ............................... [[32mPASS[0m in 1.62s]
+[0m09:07:44  45 of 46 START test unique_dim_geography_geo_id ................................ [RUN]
+[0m09:07:44  42 of 46 WARN 3744 unique_dim_campaigns_campaign_id ............................ [[33mWARN 3744[0m in 1.57s]
+[0m09:07:44  46 of 46 START test unique_dim_platforms_platform_id ........................... [RUN]
+[0m09:07:44  43 of 46 PASS unique_dim_dates_date_id ......................................... [[32mPASS[0m in 1.45s]
+[0m09:07:45  46 of 46 PASS unique_dim_platforms_platform_id ................................. [[32mPASS[0m in 1.36s]
+[0m09:07:45  44 of 46 PASS unique_dim_devices_device_id ..................................... [[32mPASS[0m in 1.60s]
+[0m09:07:45  45 of 46 PASS unique_dim_geography_geo_id ...................................... [[32mPASS[0m in 1.53s]
+[0m09:07:45  
+[0m09:07:45  Finished running 46 data tests in 0 hours 0 minutes and 20.58 seconds (20.58s).
+[0m09:07:45  
+[0m09:07:45  [31mCompleted with 7 errors, 0 partial successes, and 4 warnings:[0m
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 21 at position 11
+  invalid identifier 'FILE_SIZE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0
+  --------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 21 at position 11
+  invalid identifier 'BUDGET_AMOUNT'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/dbt_utils_accepted_range_dim_c_cae3c8104392b7091ed2817c37d717f8.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.dbt_utils_accepted_range_dim_c_cae3c8104392b7091ed2817c37d717f8
+  --------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_ad_formats_file_size (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_ad_formats_file_size (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'FILE_SIZE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_ad_formats_file_size.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_ad_formats_file_size
+  --------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_campaigns_budget_amount (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_campaigns_budget_amount (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'BUDGET_AMOUNT'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_campaigns_budget_amount.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_campaigns_budget_amount
+  -----------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_campaigns_campaign_name (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_campaigns_campaign_name (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'CAMPAIGN_NAME'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_campaigns_campaign_name.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_campaigns_campaign_name
+  -----------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_dates_full_date (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_dates_full_date (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'FULL_DATE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_dates_full_date.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  ---------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_dates_full_date
+  ---------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_geography_country (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_geography_country (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'COUNTRY'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_geography_country.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_geography_country
+  -----------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 3 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/accepted_values_dim_devices_df9ea84206e95c78b6fca5f49056fb11.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.accepted_values_dim_devices_df9ea84206e95c78b6fca5f49056fb11
+  -----------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 2 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/accepted_values_dim_campaigns_3774a8b60fe799eff6503a132c0b958b.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.accepted_values_dim_campaigns_3774a8b60fe799eff6503a132c0b958b
+  -------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test source_unique_raw_ad_data_campaign_id (models/sources.yml)[0m
+[0m09:07:45  Got 4016 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/sources.yml/source_unique_raw_ad_data_campaign_id.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  ------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.source_unique_raw_ad_data_campaign_id
+  ------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test unique_dim_campaigns_campaign_id (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 3744 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/unique_dim_campaigns_campaign_id.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.unique_dim_campaigns_campaign_id
+  -------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  Done. PASS=35 WARN=4 ERROR=7 SKIP=0 NO-OP=0 TOTAL=46
+
+📈 PERFORMANCE ANALYSIS RESULTS
+========================================
+Performance analysis completed successfully (simulated)
+
+📋 COMPLETE EXECUTION LOG
+========================================
+📊 Portfolio Queries Results:
+Portfolio showcase queries completed successfully
+
+Output:
+🚀 Portfolio Showcase Queries Runner
+==================================================
+✅ Connected to Snowflake successfully!
+
+============================================================
+🔍 1. Executive Summary - Top Level KPIs
+============================================================
+📊 Results: 1 rows
+
+    METRIC_CATEGORY  TOTAL_IMPRESSIONS  TOTAL_CLICKS  TOTAL_SPEND_USD  TOTAL_CONVERSIONS OVERALL_CTR  OVERALL_CPC OVERALL_CVR  OVERALL_ROAS
+Overall Performance         5173305242      64991535     123967133.59            1689688      0.0126         1.91      0.0260        0.0136
+
+============================================================
+🔍 2. Platform Performance Analysis
+============================================================
+📊 Results: 5 rows
+
+PLATFORM_NAME PLATFORM_CATEGORY PERFORMANCE_TIER  CAMPAIGN_COUNT  TOTAL_IMPRESSIONS  TOTAL_SPEND_USD PLATFORM_CTR  PLATFORM_CPC  PLATFORM_ROAS
+       Google             Major           Tier 1            3744         2956408952      71826702.48       0.0139          1.74         0.0161
+     LinkedIn           Growing           Tier 2            3604          464471557      24801031.38       0.0079          6.77         0.0056
+     Facebook             Major           Tier 1            3715         1206373229      19978257.58       0.0118          1.40         0.0154
+       TikTok           Growing           Tier 2            3436          415005050       5519594.65       0.0115          1.16         0.0126
+      Twitter          Emerging           Tier 3            2977          131046454       1841547.50       0.0087          1.62         0.0103
+
+============================================================
+🔍 3. Geographic Performance Insights
+============================================================
+📊 Results: 10 rows
+
+  COUNTRY_NAME     CONTINENT MARKET_TYPE  CAMPAIGN_COUNT  TOTAL_IMPRESSIONS  TOTAL_SPEND_USD GEO_CTR  GEO_ROAS
+ United States North America   Developed            3734         2197934729      68258925.88  0.0125    0.0106
+        Canada North America   Developed            3278          385676942       8048875.36  0.0126    0.0157
+United Kingdom        Europe   Developed            3206          342519600       7077606.87  0.0125    0.0157
+       Germany        Europe   Developed            3110          295738656       6145716.73  0.0126    0.0156
+        France        Europe   Developed            2968          240417196       4964214.06  0.0125    0.0156
+     Australia  Asia-Pacific   Developed            2861          200501324       4193277.93  0.0126    0.0156
+         Japan  Asia-Pacific   Developed            2788          195394270       4034039.60  0.0127    0.0161
+         India          Asia    Emerging            3299          306040734       3829563.28  0.0127    0.0260
+         Spain        Europe  Developing            2543          149914149       3120844.89  0.0127    0.0159
+   Netherlands        Europe  Developing            2537          146453094       3028799.21  0.0125    0.0157
+
+============================================================
+🔍 4. Time-Based Trend Analysis
+============================================================
+❌ Query failed: 002024 (42601): SQL compilation error:
+[D.MONTH] is not a valid order by expression
+
+============================================================
+🔍 5. Top Performing Campaigns
+============================================================
+📊 Results: 10 rows
+
+                      CAMPAIGN_ID PLATFORM_NAME COUNTRY_NAME  CAMPAIGN_IMPRESSIONS  CAMPAIGN_SPEND CAMPAIGN_CTR  CAMPAIGN_ROAS  CAMPAIGN_EFFECTIVENESS
+Holiday_Management_Conversion_187        Google        India                 21923          987.52       0.0352         0.0456                    63.0
+        Memorial_Church_Lead_0574      LinkedIn       Mexico                 26354          503.56       0.0079         0.0298                    63.0
+            Memorial_Air_App_0942      LinkedIn       Mexico                 13150          252.74       0.0083         0.0317                    63.0
+        Holiday_Show_Retarget_281        Google       Sweden                 52411         2093.42       0.0218         0.0306                    62.0
+                Q2_Fall_Brand_036        Google      Germany                 40133         1911.90       0.0253         0.0293                    62.0
+     Thanksgiving_Look_Brand_0406        Google  Netherlands                 32361         1893.39       0.0344         0.0338                    62.0
+       Spring_Your_Conversion_269        Google  Netherlands                 47625         1791.02       0.0186         0.0285                    62.0
+ BackToSchool_Guy_Conversion_0057        Google        Spain                 23193         1530.22       0.0329         0.0281                    62.0
+         Winter_Mother_Brand_0851        Google  Netherlands                 29433         1495.50       0.0318         0.0354                    62.0
+   Christmas_Source_Retarget_1289        Google        Italy                 33186         1452.99       0.0214         0.0275                    62.0
+
+============================================================
+🎉 Portfolio Showcase Complete!
+============================================================
+✅ Snowflake connection closed
+🧪 Data Tests Results:
+Data tests completed with some failures (continuing pipeline)
+
+Output:
+[0m09:07:24  Running with dbt=1.10.9
+[0m09:07:24  Registered adapter: snowflake=1.10.0
+[0m09:07:25  [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 2 unused configuration paths:
+- models.ad_campaign_analytics.intermediate
+- seeds.ad_campaign_analytics
+[0m09:07:25  Found 11 models, 46 data tests, 1 source, 882 macros
+[0m09:07:25  
+[0m09:07:25  Concurrency: 4 threads (target='dev')
+[0m09:07:25  
+[0m09:07:27  1 of 46 START test accepted_values_dim_ad_formats_is_video__True__False ........ [RUN]
+[0m09:07:27  2 of 46 START test accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales  [RUN]
+[0m09:07:27  3 of 46 START test accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console  [RUN]
+[0m09:07:27  4 of 46 START test accepted_values_dim_devices_is_mobile__True__False .......... [RUN]
+[0m09:07:29  3 of 46 WARN 3 accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console  [[33mWARN 3[0m in 2.12s]
+[0m09:07:29  4 of 46 PASS accepted_values_dim_devices_is_mobile__True__False ................ [[32mPASS[0m in 2.12s]
+[0m09:07:29  1 of 46 PASS accepted_values_dim_ad_formats_is_video__True__False .............. [[32mPASS[0m in 2.12s]
+[0m09:07:29  5 of 46 START test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0  [RUN]
+[0m09:07:29  6 of 46 START test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0  [RUN]
+[0m09:07:29  7 of 46 START test not_null_dim_ad_formats_ad_format_id ........................ [RUN]
+[0m09:07:29  2 of 46 WARN 2 accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales  [[33mWARN 2[0m in 2.16s]
+[0m09:07:29  8 of 46 START test not_null_dim_ad_formats_ad_format_type ...................... [RUN]
+[0m09:07:30  5 of 46 ERROR dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 .. [[31mERROR[0m in 0.92s]
+[0m09:07:30  6 of 46 ERROR dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 . [[31mERROR[0m in 0.92s]
+[0m09:07:30  9 of 46 START test not_null_dim_ad_formats_file_size ........................... [RUN]
+[0m09:07:30  10 of 46 START test not_null_dim_ad_formats_is_video ........................... [RUN]
+[0m09:07:31  9 of 46 ERROR not_null_dim_ad_formats_file_size ................................ [[31mERROR[0m in 0.73s]
+[0m09:07:31  11 of 46 START test not_null_dim_campaigns_budget_amount ....................... [RUN]
+[0m09:07:31  8 of 46 PASS not_null_dim_ad_formats_ad_format_type ............................ [[32mPASS[0m in 1.67s]
+[0m09:07:31  12 of 46 START test not_null_dim_campaigns_campaign_id ......................... [RUN]
+[0m09:07:32  7 of 46 PASS not_null_dim_ad_formats_ad_format_id .............................. [[32mPASS[0m in 2.15s]
+[0m09:07:32  13 of 46 START test not_null_dim_campaigns_campaign_name ....................... [RUN]
+[0m09:07:32  10 of 46 PASS not_null_dim_ad_formats_is_video ................................. [[32mPASS[0m in 1.38s]
+[0m09:07:32  14 of 46 START test not_null_dim_campaigns_campaign_type ....................... [RUN]
+[0m09:07:32  11 of 46 ERROR not_null_dim_campaigns_budget_amount ............................ [[31mERROR[0m in 0.84s]
+[0m09:07:32  15 of 46 START test not_null_dim_dates_date_id ................................. [RUN]
+[0m09:07:32  13 of 46 ERROR not_null_dim_campaigns_campaign_name ............................ [[31mERROR[0m in 0.86s]
+[0m09:07:32  16 of 46 START test not_null_dim_dates_full_date ............................... [RUN]
+[0m09:07:33  12 of 46 PASS not_null_dim_campaigns_campaign_id ............................... [[32mPASS[0m in 1.49s]
+[0m09:07:33  17 of 46 START test not_null_dim_devices_device_id ............................. [RUN]
+[0m09:07:33  16 of 46 ERROR not_null_dim_dates_full_date .................................... [[31mERROR[0m in 0.84s]
+[0m09:07:33  18 of 46 START test not_null_dim_devices_device_type ........................... [RUN]
+[0m09:07:33  14 of 46 PASS not_null_dim_campaigns_campaign_type ............................. [[32mPASS[0m in 1.56s]
+[0m09:07:33  15 of 46 PASS not_null_dim_dates_date_id ....................................... [[32mPASS[0m in 1.37s]
+[0m09:07:33  19 of 46 START test not_null_dim_devices_is_mobile ............................. [RUN]
+[0m09:07:33  20 of 46 START test not_null_dim_geography_country ............................. [RUN]
+[0m09:07:34  17 of 46 PASS not_null_dim_devices_device_id ................................... [[32mPASS[0m in 1.44s]
+[0m09:07:34  21 of 46 START test not_null_dim_geography_geo_id .............................. [RUN]
+[0m09:07:35  20 of 46 ERROR not_null_dim_geography_country .................................. [[31mERROR[0m in 1.31s]
+[0m09:07:35  22 of 46 START test not_null_dim_platforms_platform_id ......................... [RUN]
+[0m09:07:35  19 of 46 PASS not_null_dim_devices_is_mobile ................................... [[32mPASS[0m in 1.55s]
+[0m09:07:35  23 of 46 START test not_null_dim_platforms_platform_name ....................... [RUN]
+[0m09:07:35  18 of 46 PASS not_null_dim_devices_device_type ................................. [[32mPASS[0m in 1.79s]
+[0m09:07:35  24 of 46 START test source_accepted_values_raw_ad_data_ad_format__search__display__video__social__shopping__remarketing  [RUN]
+[0m09:07:36  21 of 46 PASS not_null_dim_geography_geo_id .................................... [[32mPASS[0m in 1.50s]
+[0m09:07:36  25 of 46 START test source_accepted_values_raw_ad_data_campaign_type__brand_awareness__conversions__traffic__app_installs__lead_generation__retargeting__video_views  [RUN]
+[0m09:07:36  22 of 46 PASS not_null_dim_platforms_platform_id ............................... [[32mPASS[0m in 1.56s]
+[0m09:07:36  26 of 46 START test source_accepted_values_raw_ad_data_device__mobile__desktop__tablet  [RUN]
+[0m09:07:36  23 of 46 PASS not_null_dim_platforms_platform_name ............................. [[32mPASS[0m in 1.46s]
+[0m09:07:36  27 of 46 START test source_accepted_values_raw_ad_data_geo__US__CA__GB__DE__FR__AU__JP__IN__BR__MX__NL__IT__ES__SE  [RUN]
+[0m09:07:37  24 of 46 PASS source_accepted_values_raw_ad_data_ad_format__search__display__video__social__shopping__remarketing  [[32mPASS[0m in 1.60s]
+[0m09:07:37  28 of 46 START test source_accepted_values_raw_ad_data_platform__Google__Facebook__LinkedIn__TikTok__Twitter  [RUN]
+[0m09:07:37  25 of 46 PASS source_accepted_values_raw_ad_data_campaign_type__brand_awareness__conversions__traffic__app_installs__lead_generation__retargeting__video_views  [[32mPASS[0m in 1.34s]
+[0m09:07:37  29 of 46 START test source_not_null_raw_ad_data_ad_format ...................... [RUN]
+[0m09:07:37  26 of 46 PASS source_accepted_values_raw_ad_data_device__mobile__desktop__tablet  [[32mPASS[0m in 1.36s]
+[0m09:07:37  30 of 46 START test source_not_null_raw_ad_data_campaign_id .................... [RUN]
+[0m09:07:38  27 of 46 PASS source_accepted_values_raw_ad_data_geo__US__CA__GB__DE__FR__AU__JP__IN__BR__MX__NL__IT__ES__SE  [[32mPASS[0m in 1.43s]
+[0m09:07:38  31 of 46 START test source_not_null_raw_ad_data_campaign_type .................. [RUN]
+[0m09:07:38  28 of 46 PASS source_accepted_values_raw_ad_data_platform__Google__Facebook__LinkedIn__TikTok__Twitter  [[32mPASS[0m in 1.63s]
+[0m09:07:38  32 of 46 START test source_not_null_raw_ad_data_clicks ......................... [RUN]
+[0m09:07:38  29 of 46 PASS source_not_null_raw_ad_data_ad_format ............................ [[32mPASS[0m in 1.52s]
+[0m09:07:38  33 of 46 START test source_not_null_raw_ad_data_conversions .................... [RUN]
+[0m09:07:39  30 of 46 PASS source_not_null_raw_ad_data_campaign_id .......................... [[32mPASS[0m in 1.44s]
+[0m09:07:39  34 of 46 START test source_not_null_raw_ad_data_date ........................... [RUN]
+[0m09:07:39  31 of 46 PASS source_not_null_raw_ad_data_campaign_type ........................ [[32mPASS[0m in 1.25s]
+[0m09:07:39  35 of 46 START test source_not_null_raw_ad_data_device ......................... [RUN]
+[0m09:07:40  33 of 46 PASS source_not_null_raw_ad_data_conversions .......................... [[32mPASS[0m in 1.69s]
+[0m09:07:40  36 of 46 START test source_not_null_raw_ad_data_geo ............................ [RUN]
+[0m09:07:41  32 of 46 PASS source_not_null_raw_ad_data_clicks ............................... [[32mPASS[0m in 2.33s]
+[0m09:07:41  37 of 46 START test source_not_null_raw_ad_data_impressions .................... [RUN]
+[0m09:07:41  34 of 46 PASS source_not_null_raw_ad_data_date ................................. [[32mPASS[0m in 2.04s]
+[0m09:07:41  38 of 46 START test source_not_null_raw_ad_data_platform ....................... [RUN]
+[0m09:07:41  35 of 46 PASS source_not_null_raw_ad_data_device ............................... [[32mPASS[0m in 2.16s]
+[0m09:07:41  39 of 46 START test source_not_null_raw_ad_data_spend_usd ...................... [RUN]
+[0m09:07:42  36 of 46 PASS source_not_null_raw_ad_data_geo .................................. [[32mPASS[0m in 1.93s]
+[0m09:07:42  40 of 46 START test source_unique_raw_ad_data_campaign_id ...................... [RUN]
+[0m09:07:42  37 of 46 PASS source_not_null_raw_ad_data_impressions .......................... [[32mPASS[0m in 1.53s]
+[0m09:07:42  41 of 46 START test unique_dim_ad_formats_ad_format_id ......................... [RUN]
+[0m09:07:42  38 of 46 PASS source_not_null_raw_ad_data_platform ............................. [[32mPASS[0m in 1.38s]
+[0m09:07:42  42 of 46 START test unique_dim_campaigns_campaign_id ........................... [RUN]
+[0m09:07:43  39 of 46 PASS source_not_null_raw_ad_data_spend_usd ............................ [[32mPASS[0m in 1.56s]
+[0m09:07:43  43 of 46 START test unique_dim_dates_date_id ................................... [RUN]
+[0m09:07:44  40 of 46 WARN 4016 source_unique_raw_ad_data_campaign_id ....................... [[33mWARN 4016[0m in 1.66s]
+[0m09:07:44  44 of 46 START test unique_dim_devices_device_id ............................... [RUN]
+[0m09:07:44  41 of 46 PASS unique_dim_ad_formats_ad_format_id ............................... [[32mPASS[0m in 1.62s]
+[0m09:07:44  45 of 46 START test unique_dim_geography_geo_id ................................ [RUN]
+[0m09:07:44  42 of 46 WARN 3744 unique_dim_campaigns_campaign_id ............................ [[33mWARN 3744[0m in 1.57s]
+[0m09:07:44  46 of 46 START test unique_dim_platforms_platform_id ........................... [RUN]
+[0m09:07:44  43 of 46 PASS unique_dim_dates_date_id ......................................... [[32mPASS[0m in 1.45s]
+[0m09:07:45  46 of 46 PASS unique_dim_platforms_platform_id ................................. [[32mPASS[0m in 1.36s]
+[0m09:07:45  44 of 46 PASS unique_dim_devices_device_id ..................................... [[32mPASS[0m in 1.60s]
+[0m09:07:45  45 of 46 PASS unique_dim_geography_geo_id ...................................... [[32mPASS[0m in 1.53s]
+[0m09:07:45  
+[0m09:07:45  Finished running 46 data tests in 0 hours 0 minutes and 20.58 seconds (20.58s).
+[0m09:07:45  
+[0m09:07:45  [31mCompleted with 7 errors, 0 partial successes, and 4 warnings:[0m
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0 (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 21 at position 11
+  invalid identifier 'FILE_SIZE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.dbt_utils_accepted_range_dim_ad_formats_file_size__100000000__0
+  --------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test dbt_utils_accepted_range_dim_campaigns_budget_amount__1000000__0 (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 21 at position 11
+  invalid identifier 'BUDGET_AMOUNT'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/dbt_utils_accepted_range_dim_c_cae3c8104392b7091ed2817c37d717f8.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.dbt_utils_accepted_range_dim_c_cae3c8104392b7091ed2817c37d717f8
+  --------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_ad_formats_file_size (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_ad_formats_file_size (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'FILE_SIZE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_ad_formats_file_size.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  --------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_ad_formats_file_size
+  --------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_campaigns_budget_amount (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_campaigns_budget_amount (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'BUDGET_AMOUNT'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_campaigns_budget_amount.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_campaigns_budget_amount
+  -----------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_campaigns_campaign_name (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_campaigns_campaign_name (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'CAMPAIGN_NAME'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_campaigns_campaign_name.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_campaigns_campaign_name
+  -----------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_dates_full_date (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_dates_full_date (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'FULL_DATE'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_dates_full_date.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  ---------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_dates_full_date
+  ---------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [31mFailure in test not_null_dim_geography_country (models/dimensions/schema.yml)[0m
+[0m09:07:45    Database Error in test not_null_dim_geography_country (models/dimensions/schema.yml)
+  000904 (42000): SQL compilation error: error line 15 at position 6
+  invalid identifier 'COUNTRY'
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/not_null_dim_geography_country.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.not_null_dim_geography_country
+  -----------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test accepted_values_dim_devices_device_type__Mobile__Desktop__Tablet__Smart_TV__Gaming_Console (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 3 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/accepted_values_dim_devices_df9ea84206e95c78b6fca5f49056fb11.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -----------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.accepted_values_dim_devices_df9ea84206e95c78b6fca5f49056fb11
+  -----------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test accepted_values_dim_campaigns_campaign_type__brand_awareness__conversions__traffic__engagement__app_installs__lead_generation__sales (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 2 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/accepted_values_dim_campaigns_3774a8b60fe799eff6503a132c0b958b.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -------------------------------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.accepted_values_dim_campaigns_3774a8b60fe799eff6503a132c0b958b
+  -------------------------------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test source_unique_raw_ad_data_campaign_id (models/sources.yml)[0m
+[0m09:07:45  Got 4016 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/sources.yml/source_unique_raw_ad_data_campaign_id.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  ------------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.source_unique_raw_ad_data_campaign_id
+  ------------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  [33mWarning in test unique_dim_campaigns_campaign_id (models/dimensions/schema.yml)[0m
+[0m09:07:45  Got 3744 results, configured to warn if != 0
+[0m09:07:45  
+[0m09:07:45    compiled code at target/compiled/ad_campaign_analytics/models/dimensions/schema.yml/unique_dim_campaigns_campaign_id.sql
+[0m09:07:45  
+[0m09:07:45    See test failures:
+  -------------------------------------------------------------------------------
+  select * from AD_CAMPAIGNS.RAW_dbt_test__audit.unique_dim_campaigns_campaign_id
+  -------------------------------------------------------------------------------
+[0m09:07:45  
+[0m09:07:45  Done. PASS=35 WARN=4 ERROR=7 SKIP=0 NO-OP=0 TOTAL=46
+📈 Performance Analysis Results:
+Performance analysis completed successfully (simulated)
+
+📋 Analytics Pipeline Summary:
+========================================
+✅ Portfolio queries executed
+✅ Data quality tests completed
+✅ Performance analysis completed
+✅ Analytics report generated
+🔍 Project root: /Users/vanditgupta/Vandit/Github/Projects/AdSpendIQ/ad_campaign_spend_tracker
+💾 Attempting to save analytics report...
+📁 Saving analytics report to: /Users/vanditgupta/Vandit/Github/Projects/AdSpendIQ/ad_campaign_spend_tracker/analytics_reports/analytics_testing_report_20250816_050752.txt
+
+
+============================================================
+Report saved to: /Users/vanditgupta/Vandit/Github/Projects/AdSpendIQ/ad_campaign_spend_tracker/analytics_reports/analytics_testing_report_20250816_050752.txt
