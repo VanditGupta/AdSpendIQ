@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from scripts.generate_fake_ads import generate_fake_ad_data, save_daily_data
 from scripts.load_daily_snowflake import load_daily_to_snowflake
+from scripts.data_retention_manager import DataRetentionManager
 
 # Default arguments for the DAG
 default_args = {
@@ -120,6 +121,42 @@ def load_daily_to_snowflake_task(**context):
         print(f"❌ Daily Snowflake loader failed: {e}")
         raise e
 
+def run_data_retention(**context):
+    """
+    Run data retention policies to prevent infinite data growth.
+    Keeps only the last 90 days of data in both local files and Snowflake.
+    
+    Args:
+        **context: Airflow context
+    
+    Returns:
+        str: Summary of retention actions taken
+    """
+    
+    try:
+        print("🧹 Starting data retention cleanup")
+        
+        # Create retention manager (90 days retention, with archiving)
+        retention_manager = DataRetentionManager(retention_days=90, archive_enabled=True)
+        
+        # Run full cleanup (local files + Snowflake)
+        deleted_rows = retention_manager.run_full_cleanup()
+        
+        print(f"✅ Data retention completed: {deleted_rows:,} old rows removed from Snowflake")
+        
+        # Store results in XCom for summary task
+        context['task_instance'].xcom_push(key='retention_action', value='cleanup_completed')
+        context['task_instance'].xcom_push(key='rows_deleted', value=deleted_rows)
+        
+        return f"Data retention completed: {deleted_rows:,} old rows removed"
+        
+    except Exception as e:
+        print(f"❌ Data retention failed: {e}")
+        # Don't fail the entire pipeline if retention fails
+        context['task_instance'].xcom_push(key='retention_action', value='cleanup_failed')
+        context['task_instance'].xcom_push(key='rows_deleted', value=0)
+        return f"Data retention failed: {str(e)}"
+
 def log_pipeline_summary(**context):
     """
     Log a comprehensive summary of the entire pipeline execution.
@@ -140,6 +177,8 @@ def log_pipeline_summary(**context):
     daily_file_path = task_instance.xcom_pull(key='daily_file_path', default='unknown')
     action_taken = task_instance.xcom_pull(key='action_taken', default='unknown')
     rows_loaded = task_instance.xcom_pull(key='rows_loaded', default=0)
+    retention_action = task_instance.xcom_pull(key='retention_action', default='unknown')
+    rows_deleted = task_instance.xcom_pull(key='rows_deleted', default=0)
     
     # Ensure we have safe values for formatting
     if daily_file_path is None:
@@ -148,6 +187,10 @@ def log_pipeline_summary(**context):
         action_taken = 'unknown'
     if rows_loaded is None:
         rows_loaded = 0
+    if retention_action is None:
+        retention_action = 'unknown'
+    if rows_deleted is None:
+        rows_deleted = 0
     
     summary = f"""
     📊 Comprehensive Ad Campaign Pipeline Summary - {target_date}
@@ -165,6 +208,10 @@ def log_pipeline_summary(**context):
     • Action: {action_taken}
     • Rows processed: {rows_loaded:,}
     
+    🧹 Data Retention:
+    • Action: {retention_action}
+    • Rows deleted: {rows_deleted:,}
+    
     📈 Raw Ad Platform Data:
     • 5 platforms: Google, Facebook, LinkedIn, TikTok, Twitter
     • 7 campaign types: brand_awareness, conversions, traffic, app_installs, lead_generation, retargeting, video_views
@@ -174,6 +221,8 @@ def log_pipeline_summary(**context):
     
     🔄 Data Management:
     • Daily incremental loading to Snowflake
+    • 90-day data retention policy (prevents infinite growth)
+    • Automatic cleanup of old local files and Snowflake data
     • Clean separation of concerns with dedicated scripts
     • Efficient data pipeline for portfolio demonstration
     
@@ -192,10 +241,10 @@ def log_pipeline_summary(**context):
 dag = DAG(
     'ad_data_generator_dag',
     default_args=default_args,
-    description='Daily ad campaign data generation and Snowflake loading pipeline',
+    description='Daily ad campaign data generation, Snowflake loading, and data retention pipeline',
     schedule='0 9 * * *',  # Daily at 9:00 AM
     max_active_runs=1,
-    tags=['ad_campaigns', 'data_generation', 'snowflake', 'portfolio'],
+    tags=['ad_campaigns', 'data_generation', 'snowflake', 'data_retention', 'portfolio'],
 )
 
 # Define tasks
@@ -213,6 +262,12 @@ snowflake_loader_task = PythonOperator(
     dag=dag,
 )
 
+retention_task = PythonOperator(
+    task_id='run_data_retention',
+    python_callable=run_data_retention,
+    dag=dag,
+)
+
 log_summary_task = PythonOperator(
     task_id='log_pipeline_summary',
     python_callable=log_pipeline_summary,
@@ -222,7 +277,7 @@ log_summary_task = PythonOperator(
 end_task = EmptyOperator(task_id='end', dag=dag)
 
 # Set task dependencies - Sequential execution
-start_task >> generate_data_task >> snowflake_loader_task >> log_summary_task >> end_task
+start_task >> generate_data_task >> snowflake_loader_task >> retention_task >> log_summary_task >> end_task
 
 # Task documentation
 start_task.doc = "Start the comprehensive ad campaign pipeline"
@@ -237,6 +292,11 @@ snowflake_loader_task.doc = """
 Loads daily generated ad campaign data to Snowflake.
 Uses the dedicated load_daily_snowflake.py script for clean separation of concerns.
 Appends new data to the existing raw.ad_data table efficiently.
+"""
+
+retention_task.doc = """
+Runs data retention policies to prevent infinite data growth.
+Keeps only the last 90 days of data in both local files and Snowflake.
 """
 
 log_summary_task.doc = """

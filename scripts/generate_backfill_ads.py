@@ -21,25 +21,32 @@ from pathlib import Path
 fake = Faker()
 Faker.seed(42)
 
-def generate_historical_ad_data(start_date='2024-08-01', end_date='2025-08-15', total_rows=300000):
+def generate_historical_ad_data(start_date=None, end_date=None, total_rows=300000):
     """
     Generate historical fake ad campaign data across a date range.
     
     Args:
-        start_date (str): Start date in YYYY-MM-DD format
-        end_date (str): End date in YYYY-MM-DD format
+        start_date (str): Start date in YYYY-MM-DD format (defaults to 120 days ago)
+        end_date (str): End date in YYYY-MM-DD format (defaults to today)
         total_rows (int): Total number of rows to generate
     
     Returns:
         pd.DataFrame: DataFrame containing historical fake ad campaign data
     """
     
-    # Parse dates
-    start_dt = datetime.strptime(start_date, '%Y-%m-%d').date()
-    end_dt = datetime.strptime(end_date, '%Y-%m-%d').date()
+    # Set default dates if not provided
+    if end_date is None:
+        end_date = datetime.now().date()
+    else:
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    
+    if start_date is None:
+        start_date = end_date - timedelta(days=120)  # Default to 120 days ago
+    else:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
     
     # Calculate date range
-    date_range = (end_dt - start_dt).days + 1
+    date_range = (end_date - start_date).days + 1
     
     # Calculate rows per day (with some variation)
     base_rows_per_day = total_rows // date_range
@@ -93,9 +100,9 @@ def generate_historical_ad_data(start_date='2024-08-01', end_date='2025-08-15', 
             return 1.0
     
     all_data = []
-    current_date = start_dt
+    current_date = start_date
     
-    while current_date <= end_dt:
+    while current_date <= end_date:
         # Calculate rows for this date (with some randomness)
         seasonal_mult = get_seasonal_multiplier(current_date)
         rows_today = int(base_rows_per_day * seasonal_mult * random.uniform(0.8, 1.2))
@@ -324,10 +331,17 @@ def main():
     print("🚀 Ad Campaign Spend Tracker - Historical Data Backfill Generator")
     print("=" * 70)
     
-    # Generate historical data
+    # Generate historical data - starting from 120 days ago to ensure we get enough data
+    # while staying within reasonable retention limits
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=120)  # 120 days ago
+    
+    print(f"📅 Generating data from {start_date} to {end_date}")
+    print(f"📊 Target: 300,000 rows across {end_date - start_date} days")
+    
     df = generate_historical_ad_data(
-        start_date='2024-08-01',
-        end_date='2025-08-15',
+        start_date=start_date.strftime('%Y-%m-%d'),
+        end_date=end_date.strftime('%Y-%m-%d'),
         total_rows=300000
     )
     
