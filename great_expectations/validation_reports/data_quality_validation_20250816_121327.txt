@@ -1,0 +1,79 @@
+Ad Campaign Data Quality Validation Report
+============================================================
+Generated: 2025-08-16 12:13:27
+Status: ✅ PASSED
+
+🚀 Great Expectations Data Validation
+========================================
+🔌 Connecting to Snowflake...
+📊 Querying sample data...
+📊 Loaded 1000 records for validation
+
+🔍 Validating Data Quality...
+==================================================
+📋 Actual columns in data: ['campaign_id', 'platform', 'date', 'geo', 'device', 'campaign_type', 'ad_format', 'impressions', 'clicks', 'spend_usd', 'conversions']
+📊 Data shape: (1000, 11)
+📋 First few rows:
+                     campaign_id  platform  ... spend_usd conversions
+0           Labor_Land_Lead_0550    Google  ...    762.51          11
+1     Winter_Him_Conversion_1896  Facebook  ...    303.12           8
+2  Summer_Identify_Shopping_0890    TikTok  ...    163.31           1
+3      Christmas_Vote_Video_0845    TikTok  ...    327.28           5
+4   Memorial_Line_Awareness_1157  Facebook  ...    641.64           9
+
+[5 rows x 11 columns]
+
+📋 Schema Validation:
+   ✅ campaign_id: Present
+   ✅ platform: Present
+   ✅ date: Present
+   ✅ geo: Present
+   ✅ device: Present
+   ✅ campaign_type: Present
+   ✅ ad_format: Present
+   ✅ impressions: Present
+   ✅ clicks: Present
+   ✅ spend_usd: Present
+   ✅ conversions: Present
+
+🔧 Data Type Validation:
+   ✅ campaign_id: Correct type (object)
+   ✅ platform: Correct type (object)
+   ✅ date: Correct type (object)
+   ✅ geo: Correct type (object)
+   ✅ device: Correct type (object)
+   ✅ campaign_type: Correct type (object)
+   ✅ ad_format: Correct type (object)
+   ✅ impressions: Correct type (int64)
+   ✅ clicks: Correct type (int64)
+   ✅ spend_usd: Correct type (float64)
+   ✅ conversions: Correct type (int64)
+
+📊 Value Validation:
+   ✅ Platforms: Valid values
+   ✅ Geography: Valid values
+   ✅ Devices: Valid values
+
+💼 Business Logic Validation:
+   ✅ Non-negative values
+   ✅ Business rules (impressions ≥ clicks ≥ conversions)
+
+📈 Data Volume Validation:
+   ✅ Record count: 1,000 (should be 1K-10M)
+
+📋 Validation Summary:
+==================================================
+✅ Passed: 28/28
+❌ Failed: 0/28
+
+🎉 All validations passed! Data quality is excellent!
+
+📚 Next steps:
+1. Review validation results
+2. Fix any data quality issues
+3. Re-run validation
+4. Set up automated validation in your pipeline
+
+
+============================================================
+Report saved to: /Users/vanditgupta/Vandit/Github/Projects/AdSpendIQ/ad_campaign_spend_tracker/great_expectations/validation_reports/data_quality_validation_20250816_121327.txt

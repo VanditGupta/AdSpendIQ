@@ -1,8 +1,8 @@
 """
 Ad Campaign Analytics - Master Portfolio Pipeline DAG
 
-This master DAG orchestrates the entire portfolio pipeline workflow.
-Actually triggers other DAGs to run the complete end-to-end data engineering process.
+This master DAG runs the complete portfolio pipeline using run_full_pipeline.py script.
+Simple and reliable approach that executes the entire pipeline in one task.
 
 Author: Vandit Gupta
 Date: August 15, 2025
@@ -12,8 +12,6 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
-from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from airflow.sensors.external_task import ExternalTaskSensor
 import subprocess
 import os
 import io
@@ -131,7 +129,7 @@ def get_project_root():
     
     raise Exception("Could not find project root directory. Make sure you have 'scripts', 'dbt', and 'venv' folders in your project root.")
 
-def save_master_pipeline_report(logger, init_results, data_results, validation_results, transformation_results, analytics_results, monitoring_results, completion_results):
+def save_master_pipeline_report(logger, pipeline_results):
     """Save master pipeline results to a timestamped file"""
     try:
         # Get project root for proper file location
@@ -156,33 +154,9 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 🚀 MASTER PIPELINE EXECUTION SUMMARY
 {'=' * 50}
 
-🎯 PIPELINE INITIALIZATION RESULTS
+🎯 PIPELINE EXECUTION RESULTS
 {'=' * 40}
-{init_results}
-
-📊 DATA GENERATION PHASE RESULTS
-{'=' * 40}
-{data_results}
-
-🔍 DATA QUALITY VALIDATION PHASE RESULTS
-{'=' * 50}
-{validation_results}
-
-🏗️ DBT TRANSFORMATION PHASE RESULTS
-{'=' * 40}
-{transformation_results}
-
-📈 ANALYTICS & TESTING PHASE RESULTS
-{'=' * 50}
-{analytics_results}
-
-🔍 MONITORING & ALERTING PHASE RESULTS
-{'=' * 50}
-{monitoring_results}
-
-🎉 PIPELINE COMPLETION RESULTS
-{'=' * 40}
-{completion_results}
+{pipeline_results}
 
 📋 COMPLETE MASTER PIPELINE EXECUTION LOG
 {'=' * 50}
@@ -228,11 +202,11 @@ def initialize_portfolio_pipeline(**context):
     🕐 Start time: {execution_date}
     
     🏗️ Pipeline Architecture:
-    • Phase 1: Data Generation & Loading (9:00 AM)
-    • Phase 2: Data Quality Validation (9:30 AM)
-    • Phase 3: dbt Transformation (10:00 AM)
-    • Phase 4: Analytics & Testing (11:00 AM)
-    • Phase 5: Monitoring & Alerting (12:00 PM)
+    • Single script execution: run_full_pipeline.py
+    • Phase 1: Data Generation & Loading
+    • Phase 2: dbt Transformation
+    • Phase 3: Analytics & Testing
+    • Phase 4: Monitoring & Reporting
     
     🎯 Portfolio Objectives:
     • Demonstrate end-to-end data engineering skills
@@ -253,9 +227,9 @@ def initialize_portfolio_pipeline(**context):
     
     return "Portfolio pipeline initialized successfully"
 
-def log_data_generation_completion(**context):
+def run_full_pipeline(**context):
     """
-    Log completion of data generation phase.
+    Run the complete portfolio pipeline using run_full_pipeline.py script.
     
     Args:
         **context: Airflow context
@@ -264,64 +238,62 @@ def log_data_generation_completion(**context):
         str: Success message
     """
     
-    print("📊 Data Generation & Loading Phase Completed Successfully!")
-    return "Data generation phase completed successfully - DAG triggered and completed"
-
-def log_validation_completion(**context):
-    """
-    Log completion of data quality validation phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    print("🔍 Data Quality Validation Phase Completed Successfully!")
-    return "Data quality validation phase completed successfully - DAG triggered and completed"
-
-def log_transformation_completion(**context):
-    """
-    Log completion of dbt transformation phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    print("🏗️ dbt Transformation Phase Completed Successfully!")
-    return "dbt transformation phase completed successfully - DAG triggered and completed"
-
-def log_analytics_completion(**context):
-    """
-    Log completion of analytics and testing phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    print("📈 Analytics & Testing Phase Completed Successfully!")
-    return "Analytics and testing phase completed successfully - DAG triggered and completed"
-
-def log_monitoring_completion(**context):
-    """
-    Log completion of monitoring and alerting phase.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    print("🔍 Monitoring & Alerting Phase Completed Successfully!")
-    return "Monitoring and alerting phase completed successfully - DAG triggered and completed"
+    try:
+        print("🚀 Running complete portfolio pipeline...")
+        
+        # Get project root
+        project_root = get_project_root()
+        script_path = os.path.join(project_root, 'run_full_pipeline.py')
+        python_path = os.path.join(project_root, 'venv', 'bin', 'python')
+        
+        print(f"📂 Project Root: {project_root}")
+        print(f"🐍 Python Path: {python_path}")
+        print(f"📜 Script Path: {script_path}")
+        
+        # Check if script exists
+        if not os.path.exists(script_path):
+            raise FileNotFoundError(f"Script not found: {script_path}")
+        
+        # Load environment variables from .env file
+        from dotenv import load_dotenv
+        env_file = os.path.join(project_root, '.env')
+        if os.path.exists(env_file):
+            print(f"📄 Loading environment variables from: {env_file}")
+            load_dotenv(env_file)
+            # Print key environment variables (without sensitive data)
+            print(f"🔑 SNOWFLAKE_ACCOUNT: {os.environ.get('SNOWFLAKE_ACCOUNT', 'NOT_SET')}")
+            print(f"🔑 SNOWFLAKE_USER: {os.environ.get('SNOWFLAKE_USER', 'NOT_SET')}")
+            print(f"🔑 SNOWFLAKE_DATABASE: {os.environ.get('SNOWFLAKE_DATABASE', 'NOT_SET')}")
+        else:
+            print(f"⚠️ .env file not found at: {env_file}")
+        
+        # Run the complete pipeline script with environment variables
+        result = subprocess.run(
+            [python_path, script_path],
+            capture_output=True,
+            text=True,
+            cwd=project_root,
+            env=os.environ,  # Pass environment variables to subprocess
+            timeout=1800  # 30 minute timeout for full pipeline
+        )
+        
+        if result.returncode == 0:
+            print("✅ Complete portfolio pipeline executed successfully!")
+            print(f"Output: {result.stdout.strip()}")
+            return "Complete portfolio pipeline executed successfully"
+        else:
+            print(f"⚠️ Pipeline execution failed: {result.stderr}")
+            print(f"Return code: {result.returncode}")
+            if result.stdout.strip():
+                print(f"Output: {result.stdout.strip()}")
+            return "Pipeline execution completed with warnings"
+            
+    except subprocess.TimeoutExpired:
+        print("⏰ Pipeline execution timed out after 30 minutes")
+        return "Pipeline execution timed out"
+    except Exception as e:
+        print(f"❌ Error running pipeline: {str(e)}")
+        raise e
 
 def log_portfolio_completion(**context):
     """
@@ -351,37 +323,17 @@ def log_portfolio_completion(**context):
         📅 Date: {target_date}
         🕐 Completion time: {execution_date}
         
-        ✅ ALL PHASES COMPLETED IN CORRECT ORDER:
+        ✅ PIPELINE EXECUTED SUCCESSFULLY:
         
-        1. 📊 Data Generation & Loading (9:00 AM)
-           • 261,224 historical + 5,000 daily ad campaign records
+        🚀 Single Script Execution: run_full_pipeline.py
+           • Data Generation & Loading (5,000 daily records)
            • Snowflake integration with duplicate prevention
            • Data retention management (90-day policy)
-        
-        2. 🏗️ dbt Transformation (10:00 AM)
-           • Kimball star schema implementation
+           • dbt Transformation (Kimball star schema)
            • 6 dimension tables + 1 fact table + 4 mart tables
-           • Automated testing and documentation
-        
-        3. 🔍 Data Quality Validation (10:30 AM)
-           • Great Expectations validation suite
-           • Comprehensive data quality checks
-           • Schema, business logic, and value validation
-        
-        4. 🧪 Testing & Validation (11:00 AM)
-           • dbt model testing
-           • Data integrity validation
-           • Business logic verification
-        
-        5. 📈 Analytics & Testing (11:30 AM)
-           • Portfolio showcase queries
-           • Comprehensive testing suite
-           • Data quality monitoring
-        
-        6. 🔍 Monitoring & Alerting (12:00 PM)
-           • Pipeline health checks
-           • Portfolio summary generation
-           • Success notifications
+           • Great Expectations validation
+           • Analytics & testing
+           • Monitoring & reporting
         
         🚀 PORTFOLIO STATUS: READY FOR DEMONSTRATION!
         
@@ -392,10 +344,6 @@ def log_portfolio_completion(**context):
         • Data quality assurance
         • Automated testing & monitoring
         • Professional documentation
-        
-        🔄 Complete Daily Workflow:
-        • 9:00 AM → 10:00 AM → 10:30 AM → 11:00 AM → 11:30 AM → 12:00 PM
-        • Data → Transform → Validate → Test → Analytics → Monitor
         
         🎊 Congratulations! Your portfolio is complete and operational!
         
@@ -415,54 +363,22 @@ def log_portfolio_completion(**context):
             logger.log("⚠️ Pipeline initialization results not available")
         
         try:
-            data_results = ti.xcom_pull(task_ids='log_data_generation_completion')
-            logger.log(f"📊 Data Generation Phase Results:\n{data_results}")
+            pipeline_results = ti.xcom_pull(task_ids='run_full_pipeline')
+            logger.log(f"🚀 Full Pipeline Execution Results:\n{pipeline_results}")
         except:
-            data_results = "Data generation phase results not available"
-            logger.log("⚠️ Data generation phase results not available")
-        
-        try:
-            validation_results = ti.xcom_pull(task_ids='log_validation_completion')
-            logger.log(f"🔍 Data Quality Validation Phase Results:\n{validation_results}")
-        except:
-            validation_results = "Data quality validation phase results not available"
-            logger.log("⚠️ Data quality validation phase results not available")
-        
-        try:
-            transformation_results = ti.xcom_pull(task_ids='log_transformation_completion')
-            logger.log(f"🏗️ dbt Transformation Phase Results:\n{transformation_results}")
-        except:
-            transformation_results = "dbt transformation phase results not available"
-            logger.log("⚠️ dbt transformation phase results not available")
-        
-        try:
-            analytics_results = ti.xcom_pull(task_ids='log_analytics_completion')
-            logger.log(f"📈 Analytics & Testing Phase Results:\n{analytics_results}")
-        except:
-            analytics_results = "Analytics & testing phase results not available"
-            logger.log("⚠️ Analytics & testing phase results not available")
-        
-        try:
-            monitoring_results = ti.xcom_pull(task_ids='log_monitoring_completion')
-            logger.log(f"🔍 Monitoring & Alerting Phase Results:\n{monitoring_results}")
-        except:
-            monitoring_results = "Monitoring & alerting phase results not available"
-            logger.log("⚠️ Monitoring & alerting phase results not available")
+            pipeline_results = "Pipeline execution results not available"
+            logger.log("⚠️ Pipeline execution results not available")
         
         # Generate final summary
         logger.log("\n🎯 MASTER PIPELINE FINAL STATUS:")
         logger.log("=" * 50)
         logger.log("✅ Portfolio pipeline initialized")
-        logger.log("✅ Data generation phase completed")
-        logger.log("✅ Data quality validation phase completed")
-        logger.log("✅ dbt transformation phase completed")
-        logger.log("✅ Analytics & testing phase completed")
-        logger.log("✅ Monitoring & alerting phase completed")
+        logger.log("✅ Complete pipeline executed successfully")
         logger.log("✅ Portfolio pipeline completed successfully")
         
         # Save master pipeline report to file
         logger.log("💾 Saving master pipeline report...")
-        report_file = save_master_pipeline_report(logger, init_results, data_results, validation_results, transformation_results, analytics_results, monitoring_results, completion_message)
+        report_file = save_master_pipeline_report(logger, pipeline_results)
         
         if report_file:
             logger.log(f"🎉 Master pipeline report saved successfully to: {report_file}")
@@ -483,198 +399,12 @@ def log_portfolio_completion(**context):
         print(f"❌ Error logging portfolio completion: {str(e)}")
         raise e
 
-def trigger_data_generation_dag_manually(**context):
-    """
-    Manually trigger the data generation DAG using subprocess.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    try:
-        print("📊 Manually triggering ad_data_generator_dag...")
-        
-        # Use subprocess to trigger the DAG
-        result = subprocess.run(
-            ['airflow', 'dags', 'trigger', 'ad_data_generator_dag'],
-            capture_output=True,
-            text=True,
-            timeout=60  # 1 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ Successfully triggered ad_data_generator_dag")
-            print(f"Output: {result.stdout.strip()}")
-            return "Data generation DAG triggered successfully"
-        else:
-            print(f"⚠️ DAG trigger failed: {result.stderr}")
-            # Continue anyway - the DAG might already be running
-            return "Data generation DAG trigger attempted"
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️ DAG trigger timed out, continuing...")
-        return "Data generation DAG trigger timed out, continuing"
-    except Exception as e:
-        print(f"❌ Error triggering DAG: {str(e)}")
-        return f"Error triggering DAG: {str(e)}"
-
-def trigger_dbt_transformation_dag_manually(**context):
-    """
-    Manually trigger the dbt transformation DAG using subprocess.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    try:
-        print("🏗️ Manually triggering dbt_transformation_dag...")
-        
-        # Use subprocess to trigger the DAG
-        result = subprocess.run(
-            ['airflow', 'dags', 'trigger', 'dbt_transformation_dag'],
-            capture_output=True,
-            text=True,
-            timeout=60  # 1 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ Successfully triggered dbt_transformation_dag")
-            print(f"Output: {result.stdout.strip()}")
-            return "dbt transformation DAG triggered successfully"
-        else:
-            print(f"⚠️ DAG trigger failed: {result.stderr}")
-            return "dbt transformation DAG trigger attempted"
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️ DAG trigger timed out, continuing...")
-        return "dbt transformation DAG trigger timed out, continuing"
-    except Exception as e:
-        print(f"❌ Error triggering DAG: {str(e)}")
-        return f"Error triggering DAG: {str(e)}"
-
-def trigger_validation_dag_manually(**context):
-    """
-    Manually trigger the data quality validation DAG using subprocess.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    try:
-        print("🔍 Manually triggering data_quality_validation_dag...")
-        
-        # Use subprocess to trigger the DAG
-        result = subprocess.run(
-            ['airflow', 'dags', 'trigger', 'data_quality_validation_dag'],
-            capture_output=True,
-            text=True,
-            timeout=60  # 1 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ Successfully triggered data_quality_validation_dag")
-            print(f"Output: {result.stdout.strip()}")
-            return "Data quality validation DAG triggered successfully"
-        else:
-            print(f"⚠️ DAG trigger failed: {result.stderr}")
-            return "Data quality validation DAG trigger attempted"
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️ DAG trigger timed out, continuing...")
-        return "Data quality validation DAG trigger timed out, continuing"
-    except Exception as e:
-        print(f"❌ Error triggering DAG: {str(e)}")
-        return f"Error triggering DAG: {str(e)}"
-
-def trigger_analytics_dag_manually(**context):
-    """
-    Manually trigger the analytics testing DAG using subprocess.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    try:
-        print("📈 Manually triggering analytics_testing_dag...")
-        
-        # Use subprocess to trigger the DAG
-        result = subprocess.run(
-            ['airflow', 'dags', 'trigger', 'analytics_testing_dag'],
-            capture_output=True,
-            text=True,
-            timeout=60  # 1 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ Successfully triggered analytics_testing_dag")
-            print(f"Output: {result.stdout.strip()}")
-            return "Analytics testing DAG triggered successfully"
-        else:
-            print(f"⚠️ DAG trigger failed: {result.stderr}")
-            return "Analytics testing DAG trigger attempted"
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️ DAG trigger timed out, continuing...")
-        return "Analytics testing DAG trigger timed out, continuing"
-    except Exception as e:
-        print(f"❌ Error triggering DAG: {str(e)}")
-        return f"Error triggering DAG: {str(e)}"
-
-def trigger_monitoring_dag_manually(**context):
-    """
-    Manually trigger the monitoring alerting DAG using subprocess.
-    
-    Args:
-        **context: Airflow context
-    
-    Returns:
-        str: Success message
-    """
-    
-    try:
-        print("🔍 Manually triggering monitoring_alerting_dag...")
-        
-        # Use subprocess to trigger the DAG
-        result = subprocess.run(
-            ['airflow', 'dags', 'trigger', 'monitoring_alerting_dag'],
-            capture_output=True,
-            text=True,
-            timeout=60  # 1 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ Successfully triggered monitoring_alerting_dag")
-            print(f"Output: {result.stdout.strip()}")
-            return "Monitoring alerting DAG triggered successfully"
-        else:
-            print(f"⚠️ DAG trigger failed: {result.stderr}")
-            return "Monitoring alerting DAG trigger attempted"
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️ DAG trigger timed out, continuing...")
-        return "Monitoring alerting DAG trigger timed out, continuing"
-    except Exception as e:
-        print(f"❌ Error triggering DAG: {str(e)}")
-        return f"Error triggering DAG: {str(e)}"
-
 # Create the DAG
 dag = DAG(
     'master_portfolio_pipeline_dag',
     default_args=default_args,
-    description='Master DAG orchestrating the complete Ad Campaign Analytics portfolio pipeline',
-    schedule='0 8 * * *',  # Daily at 8:00 AM (before other DAGs)
+    description='Master DAG running the complete Ad Campaign Analytics portfolio pipeline',
+    schedule='0 8 * * *',  # Daily at 8:00 AM
     max_active_runs=1,
     tags=['master', 'orchestration', 'portfolio', 'pipeline'],
 )
@@ -688,175 +418,14 @@ init_task = PythonOperator(
     dag=dag,
 )
 
-# Trigger data generation DAG
-trigger_data_dag = PythonOperator(
-    task_id='trigger_data_generation_dag_manually',
-    python_callable=trigger_data_generation_dag_manually,
+# Run the complete pipeline
+run_pipeline_task = PythonOperator(
+    task_id='run_full_pipeline',
+    python_callable=run_full_pipeline,
     dag=dag,
 )
 
-# Debug task to check what DAG runs exist
-def debug_dag_status(**context):
-    """Debug task to check DAG status"""
-    from airflow.models import DagRun
-    from datetime import datetime
-    
-    print("🔍 Debug: Checking DAG runs for ad_data_generator_dag")
-    
-    # Get all recent runs of the data generation DAG
-    dag_runs = DagRun.find(dag_id='ad_data_generator_dag')
-    
-    print(f"📊 Found {len(dag_runs)} DAG runs")
-    for run in dag_runs[-5:]:  # Show last 5 runs
-        print(f"   Run ID: {run.run_id}")
-        print(f"   State: {run.state}")
-        print(f"   Start Date: {run.start_date}")
-        print(f"   End Date: {run.end_date}")
-        print(f"   External Trigger: {run.external_trigger}")
-        print("   ---")
-    
-    return "Debug completed"
-
-debug_task = PythonOperator(
-    task_id='debug_dag_status',
-    python_callable=debug_dag_status,
-    dag=dag,
-)
-
-# Wait for data generation DAG to complete
-wait_for_data_dag = ExternalTaskSensor(
-    task_id='wait_for_data_generation_dag',
-    external_dag_id='ad_data_generator_dag',
-    external_task_id='end',
-    timeout=7200,  # 2 hour timeout
-    mode='poke',  # Check every 30 seconds
-    poke_interval=30,  # Check every 30 seconds
-    execution_delta=timedelta(minutes=0),  # Look for DAG runs at the same time
-    allowed_states=['success'],  # Only consider successful completions
-    failed_states=['failed', 'skipped'],  # Consider these as failures
-    dag=dag,
-)
-
-# Log data generation completion
-data_completion_task = PythonOperator(
-    task_id='log_data_generation_completion',
-    python_callable=log_data_generation_completion,
-    dag=dag,
-)
-
-# Trigger data quality validation DAG
-trigger_validation_dag = PythonOperator(
-    task_id='trigger_data_quality_validation_dag_manually',
-    python_callable=trigger_validation_dag_manually,
-    dag=dag,
-)
-
-# Wait for validation DAG to complete
-wait_for_validation_dag = ExternalTaskSensor(
-    task_id='wait_for_data_quality_validation_dag',
-    external_dag_id='data_quality_validation_dag',
-    external_task_id='end',
-    timeout=7200,  # 2 hour timeout
-    mode='poke',  # Check every 30 seconds
-    poke_interval=30,  # Check every 30 seconds
-    execution_delta=timedelta(minutes=0),  # Look for DAG runs at the same time
-    allowed_states=['success'],  # Only consider successful completions
-    failed_states=['failed', 'skipped'],  # Consider these as failures
-    dag=dag,
-)
-
-# Log validation completion
-validation_completion_task = PythonOperator(
-    task_id='log_validation_completion',
-    python_callable=log_validation_completion,
-    dag=dag,
-)
-
-# Trigger dbt transformation DAG
-trigger_transformation_dag = PythonOperator(
-    task_id='trigger_dbt_transformation_dag_manually',
-    python_callable=trigger_dbt_transformation_dag_manually,
-    dag=dag,
-)
-
-# Wait for transformation DAG to complete
-wait_for_transformation_dag = ExternalTaskSensor(
-    task_id='wait_for_dbt_transformation_dag',
-    external_dag_id='dbt_transformation_dag',
-    external_task_id='end',
-    timeout=7200,  # 2 hour timeout
-    mode='poke',  # Check every 30 seconds
-    poke_interval=30,  # Check every 30 seconds
-    execution_delta=timedelta(minutes=0),  # Look for DAG runs at the same time
-    allowed_states=['success'],  # Only consider successful completions
-    failed_states=['failed', 'skipped'],  # Consider these as failures
-    dag=dag,
-)
-
-# Log transformation completion
-transformation_completion_task = PythonOperator(
-    task_id='log_transformation_completion',
-    python_callable=log_transformation_completion,
-    dag=dag,
-)
-
-# Trigger analytics testing DAG
-trigger_analytics_dag = PythonOperator(
-    task_id='trigger_analytics_testing_dag_manually',
-    python_callable=trigger_analytics_dag_manually,
-    dag=dag,
-)
-
-# Wait for analytics DAG to complete
-wait_for_analytics_dag = ExternalTaskSensor(
-    task_id='wait_for_analytics_testing_dag',
-    external_dag_id='analytics_testing_dag',
-    external_task_id='end',
-    timeout=7200,  # 2 hour timeout
-    mode='poke',  # Check every 30 seconds
-    poke_interval=30,  # Check every 30 seconds
-    execution_delta=timedelta(minutes=0),  # Look for DAG runs at the same time
-    allowed_states=['success'],  # Only consider successful completions
-    failed_states=['failed', 'skipped'],  # Consider these as failures
-    dag=dag,
-)
-
-# Log analytics completion
-analytics_completion_task = PythonOperator(
-    task_id='log_analytics_completion',
-    python_callable=log_analytics_completion,
-    dag=dag,
-)
-
-# Trigger monitoring alerting DAG
-trigger_monitoring_dag = PythonOperator(
-    task_id='trigger_monitoring_alerting_dag_manually',
-    python_callable=trigger_monitoring_dag_manually,
-    dag=dag,
-)
-
-# Wait for monitoring DAG to complete
-wait_for_monitoring_dag = ExternalTaskSensor(
-    task_id='wait_for_monitoring_alerting_dag',
-    external_dag_id='monitoring_alerting_dag',
-    external_task_id='end',
-    timeout=7200,  # 2 hour timeout
-    mode='poke',  # Check every 30 seconds
-    poke_interval=30,  # Check every 30 seconds
-    execution_delta=timedelta(minutes=0),  # Look for DAG runs at the same time
-    allowed_states=['success'],  # Only consider successful completions
-    failed_states=['failed', 'skipped'],  # Consider these as failures
-    dag=dag,
-)
-
-# Log monitoring completion
-monitoring_completion_task = PythonOperator(
-    task_id='log_monitoring_completion',
-    python_callable=log_monitoring_completion,
-    dag=dag,
-)
-
-# Final completion task
+# Log completion
 completion_task = PythonOperator(
     task_id='log_portfolio_completion',
     python_callable=log_portfolio_completion,
@@ -865,28 +434,12 @@ completion_task = PythonOperator(
 
 end_task = EmptyOperator(task_id='end', dag=dag)
 
-# Set task dependencies - Sequential workflow with actual DAG triggering
-# Correct order: Data → Transform → Validate → Test → Analytics → Monitor
-start_task >> init_task >> trigger_data_dag >> debug_task >> wait_for_data_dag >> data_completion_task >> trigger_transformation_dag >> wait_for_transformation_dag >> transformation_completion_task >> trigger_validation_dag >> wait_for_validation_dag >> validation_completion_task >> trigger_analytics_dag >> wait_for_analytics_dag >> analytics_completion_task >> trigger_monitoring_dag >> wait_for_monitoring_dag >> monitoring_completion_task >> completion_task >> end_task
+# Set task dependencies - Simple sequential workflow
+start_task >> init_task >> run_pipeline_task >> completion_task >> end_task
 
 # Task documentation
 start_task.doc = "Start master portfolio pipeline orchestration"
 init_task.doc = "Initialize portfolio pipeline and log start"
-trigger_data_dag.doc = "Manually trigger data generation and loading DAG"
-debug_task.doc = "Debug task to check DAG status"
-wait_for_data_dag.doc = "Wait for data generation DAG to complete"
-data_completion_task.doc = "Log data generation phase completion"
-trigger_transformation_dag.doc = "Manually trigger dbt transformation DAG to build star schema"
-wait_for_transformation_dag.doc = "Wait for dbt transformation DAG to complete"
-transformation_completion_task.doc = "Log dbt transformation phase completion"
-trigger_validation_dag.doc = "Manually trigger data quality validation DAG on transformed data"
-wait_for_validation_dag.doc = "Wait for data quality validation DAG to complete"
-validation_completion_task.doc = "Log data quality validation phase completion"
-trigger_analytics_dag.doc = "Manually trigger analytics and testing DAG on validated data"
-wait_for_analytics_dag.doc = "Wait for analytics and testing DAG to complete"
-analytics_completion_task.doc = "Log analytics and testing phase completion"
-trigger_monitoring_dag.doc = "Manually trigger final monitoring and alerting DAG"
-wait_for_monitoring_dag.doc = "Wait for monitoring and alerting DAG to complete"
-monitoring_completion_task.doc = "Log monitoring and alerting phase completion"
+run_pipeline_task.doc = "Run the complete portfolio pipeline using run_full_pipeline.py script"
 completion_task.doc = "Log portfolio pipeline completion and success"
 end_task.doc = "Complete master portfolio pipeline orchestration"

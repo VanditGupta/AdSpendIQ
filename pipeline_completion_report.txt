@@ -2,9 +2,9 @@
         🎊 ADSPENDIQ PIPELINE COMPLETED SUCCESSFULLY!
         =============================================
         
-        📅 Start Time: 2025-08-16 03:35:50
-        📅 End Time: 2025-08-16 03:37:50
-        ⏱️ Total Duration: 0:01:59.407870
+        📅 Start Time: 2025-08-16 12:12:07
+        📅 End Time: 2025-08-16 12:13:48
+        ⏱️ Total Duration: 0:01:41.165980
         
         ✅ PHASES COMPLETED:
         
