@@ -20,19 +20,19 @@ fact_data AS (
         -- Business identifiers
         campaign_id,
         
-        -- Core metrics (facts)
+        -- Core metrics (facts) - ONLY NUMERIC VALUES
         impressions,
         clicks,
         spend_usd,
         conversions,
         
-        -- Calculated KPIs
+        -- Calculated KPIs (numeric)
         ctr,
         cpc,
         cvr,
         roas,
         
-        -- Additional business metrics
+        -- Additional business metrics (numeric)
         CASE 
             WHEN impressions > 0 THEN ROUND(spend_usd / impressions * 1000, 2)
             ELSE 0 
@@ -43,33 +43,7 @@ fact_data AS (
             ELSE 0 
         END as conversion_rate_per_dollar,
         
-        -- Performance indicators
-        CASE 
-            WHEN ctr >= 0.02 THEN 'High CTR'
-            WHEN ctr >= 0.01 THEN 'Medium CTR'
-            ELSE 'Low CTR'
-        END as ctr_performance,
-        
-        CASE 
-            WHEN cpc <= 1.00 THEN 'Low Cost'
-            WHEN cpc <= 3.00 THEN 'Medium Cost'
-            ELSE 'High Cost'
-        END as cpc_performance,
-        
-        CASE 
-            WHEN cvr >= 0.03 THEN 'High Conversion'
-            WHEN cvr >= 0.01 THEN 'Medium Conversion'
-            ELSE 'Low Conversion'
-        END as cvr_performance,
-        
-        -- ROI indicators
-        CASE 
-            WHEN roas >= 0.05 THEN 'High ROAS'
-            WHEN roas >= 0.02 THEN 'Medium ROAS'
-            ELSE 'Low ROAS'
-        END as roas_performance,
-        
-        -- Campaign effectiveness score (0-100)
+        -- Campaign effectiveness score (0-100) - numeric
         CASE 
             WHEN impressions > 0 AND clicks > 0 AND conversions > 0 THEN
                 ROUND(
@@ -79,11 +53,7 @@ fact_data AS (
                     (CASE WHEN roas >= 0.02 THEN 25 ELSE roas * 1250 END)
                 , 0)
             ELSE 0
-        END as effectiveness_score,
-        
-        -- Metadata
-        CURRENT_TIMESTAMP as _loaded_at,
-        'fact' as _model_type
+        END as effectiveness_score
         
     FROM staging_data
 )
