@@ -1,0 +1,82 @@
+🌟 AD CAMPAIGN ANALYTICS - STAR SCHEMA DIAGRAM
+
+                    [DIM_TIME]
+                         |
+                         |
+                    [DIM_CAMPAIGNS] ---- [FACT_CAMPAIGN_PERFORMANCE] ---- [DIM_PLATFORMS]
+                         |                                              |
+                         |                                              |
+                    [DIM_GEOGRAPHY]                              [DIM_DEVICES]
+                         |
+                         |
+                    [DIM_AD_FORMATS]
+
+📊 FACT TABLE: FACT_CAMPAIGN_PERFORMANCE (Center)
+├── Primary Key: campaign_performance_id
+├── Foreign Keys: campaign_id, platform_id, geo_id, device_id, date_id, ad_format_id
+├── Measures: spend, impressions, clicks, conversions, conversion_value
+└── Metadata: created_at, updated_at
+
+🔗 DIMENSION TABLES (Surrounding the fact table):
+
+1. DIM_CAMPAIGNS
+   ├── Primary Key: campaign_id
+   ├── Attributes: campaign_name, campaign_type, campaign_status, campaign_objective
+   ├── Dates: start_date, end_date
+   ├── Business: budget, target_audience, creative_theme
+   └── Metadata: created_at, updated_at
+
+2. DIM_PLATFORMS
+   ├── Primary Key: platform_id
+   ├── Attributes: platform_name, platform_type, platform_category
+   ├── Technical: platform_version, is_active
+   └── Metadata: created_at, updated_at
+
+3. DIM_GEOGRAPHY
+   ├── Primary Key: geo_id
+   ├── Location: country_name, country_code, region_name, city_name
+   ├── Business: timezone, currency, market_type
+   ├── Coordinates: latitude, longitude
+   └── Metadata: created_at, updated_at
+
+4. DIM_DEVICES
+   ├── Primary Key: device_id
+   ├── Device: device_type, device_category, device_platform
+   ├── Technical: device_brand, device_model, screen_resolution
+   ├── Software: browser_type, os_version
+   └── Metadata: created_at, updated_at
+
+5. DIM_TIME
+   ├── Primary Key: date_id
+   ├── Date: full_date, year, quarter, month, month_name
+   ├── Time: week_of_year, day_of_year, day_of_week, day_name
+   ├── Business: is_weekend, is_holiday, season
+   └── Metadata: created_at, updated_at
+
+6. DIM_AD_FORMATS
+   ├── Primary Key: ad_format_id
+   ├── Format: format_name, format_type, format_category
+   ├── Technical: dimensions, aspect_ratio, file_size_limit
+   ├── Features: is_video, is_interactive
+   └── Metadata: created_at, updated_at
+
+🎯 STAR SCHEMA BENEFITS:
+✅ Fast query performance with pre-joined dimensions
+✅ Easy to understand business concepts
+✅ Flexible analysis across multiple dimensions
+✅ Scalable design for large datasets
+✅ Consistent metrics and KPIs
+
+📈 TYPICAL QUERIES:
+• Campaign performance by platform and geography
+• Device effectiveness across different ad formats
+• Time-based trends and seasonality analysis
+• ROI analysis by campaign type and target audience
+• Geographic performance optimization insights
+
+🔧 IMPLEMENTATION NOTES:
+• All foreign keys in fact table link to primary keys in dimensions
+• Denormalized structure for optimal query performance
+• Incremental loading supported for daily data updates
+• Partitioned by date for efficient data management
+• Indexed on foreign keys for fast joins

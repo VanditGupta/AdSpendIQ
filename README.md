@@ -10,10 +10,29 @@ This project simulates a real-world **Ad Campaign Analytics** system, processing
 
 - **End-to-End Data Pipeline**: Airflow → Snowflake → dbt → Analytics
 - **Real Business Intelligence**: 4.58B impressions, $109.6M spend analysis
-- **Professional Star Schema**: Kimball methodology implementation
+- **Professional Star Schema**: Kimball methodology implementation with visual diagrams
 - **Data Quality Assurance**: Great Expectations + PyTest testing
 - **Modern Data Stack**: Airflow, Snowflake, dbt, Python
 - **Production-Ready Code**: Comprehensive testing, documentation, error handling
+
+## 🏗️ Architecture
+
+### 🌟 **Star Schema Data Model**
+
+Our data architecture follows the **Kimball Star Schema** methodology, featuring:
+
+- **1 Fact Table**: `FACT_CAMPAIGN_PERFORMANCE` - Central hub for all metrics
+- **6 Dimension Tables**: Campaigns, Platforms, Geography, Devices, Time, Ad Formats
+- **Optimized Performance**: Indexed foreign keys, denormalized structure
+- **Business Focus**: Aligned with marketing analytics requirements
+
+**📁 Complete diagrams and documentation available in `star_schema_diagrams/` folder**
+
+**🚀 Generate Custom Diagrams:**
+```bash
+cd star_schema_diagrams/
+python generate_star_schema.py
+```
 
 ## 🏗️ Architecture
 
@@ -98,6 +117,12 @@ ad_campaign_spend_tracker/
 ├── 🧪 tests/                        # Test suite
 │   └── test_data_generation.py     # Data generation tests
 ├── 🔍 great_expectations/           # Data quality validation
+├── 🌟 star_schema_diagrams/         # Star schema diagrams & documentation
+│   ├── star_schema_simple.png       # Overview diagram
+│   ├── star_schema_detailed.png     # Detailed field diagram
+│   ├── star_schema_diagram.md       # Mermaid diagram for GitHub
+│   ├── STAR_SCHEMA_GUIDE.md         # Complete usage guide
+│   └── generate_star_schema.py      # Custom diagram generator
 │   ├── great_expectations.yml      # GE configuration
 │   ├── expectations/                # Data quality expectations
 │   └── validate_ad_data.py         # Validation script
