@@ -1,0 +1,64 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw ad campaign data from Snowflake
+    tables:
+      - name: ad_data
+        description: Raw ad campaign performance data
+        columns:
+          - name: campaign_id
+            description: Unique campaign identifier
+            tests:
+              - not_null
+              - unique
+          - name: platform
+            description: Ad platform name
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['Google', 'Facebook', 'LinkedIn', 'TikTok', 'Twitter']
+          - name: date
+            description: Campaign date
+            tests:
+              - not_null
+          - name: geo
+            description: Geographic location (country code)
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['US', 'CA', 'GB', 'DE', 'FR', 'AU', 'JP', 'IN', 'BR', 'MX', 'NL', 'IT', 'ES', 'SE']
+          - name: device
+            description: Device type
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['mobile', 'desktop', 'tablet']
+          - name: campaign_type
+            description: Campaign objective type
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['brand_awareness', 'conversions', 'traffic', 'app_installs', 'lead_generation', 'retargeting', 'video_views']
+          - name: ad_format
+            description: Ad format type
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['search', 'display', 'video', 'social', 'shopping', 'remarketing']
+          - name: impressions
+            description: Number of ad impressions
+            tests:
+              - not_null
+          - name: clicks
+            description: Number of ad clicks
+            tests:
+              - not_null
+          - name: spend_usd
+            description: Ad spend in USD
+            tests:
+              - not_null
+          - name: conversions
+            description: Number of conversions
+            tests:
+              - not_null

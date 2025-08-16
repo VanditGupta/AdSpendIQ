@@ -1,0 +1,47 @@
+name: 'ad_campaign_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'ad_campaign_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  ad_campaign_analytics:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: table
+
+# Project-specific configurations
+vars:
+  # Define variables for your project
+  retention_days: 90
+  start_date: "2025-01-01"
+  
+# Seeds configuration
+seeds:
+  ad_campaign_analytics:
+    +column_types:
+      date: date
+      spend_usd: decimal(10,2)
+      impressions: integer
+      clicks: integer
+      conversions: integer
+
+# Tests configuration
+tests:
+  +store_failures: true
+  +severity: warn
