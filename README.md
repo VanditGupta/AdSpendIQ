@@ -1,16 +1,16 @@
-# 🚀 Ad Campaign Spend Tracker
+# Ad Campaign Spend Tracker
 
-A comprehensive **Data Engineering Portfolio Project** demonstrating end-to-end data pipeline development, from data generation to business intelligence.
+A comprehensive **Data Engineering Business Intelligence Project** demonstrating end-to-end data pipeline development, from data generation to business intelligence.
 
 ## 📊 Project Overview
 
 This project simulates a real-world **Ad Campaign Analytics** system, processing data from multiple advertising platforms (Google, Facebook, LinkedIn, TikTok, Twitter) to provide actionable insights for marketing teams.
 
-### 🎯 **Portfolio Highlights**
+### 🎯 **Project Highlights**
 
 - **End-to-End Data Pipeline**: Airflow → Snowflake → dbt → Analytics
 - **Real Business Intelligence**: 4.58B impressions, $109.6M spend analysis
-- **Professional Star Schema**: Kimball methodology implementation with visual diagrams
+- **Professional Star Schema**: Kimball methodology implementation
 - **Data Quality Assurance**: Great Expectations + PyTest testing
 - **Modern Data Stack**: Airflow, Snowflake, dbt, Python, Qlik Sense
 - **Production-Ready Code**: Comprehensive testing, documentation, error handling
@@ -23,6 +23,13 @@ This project simulates a real-world **Ad Campaign Analytics** system, processing
 
 Our data architecture follows the **Kimball Star Schema** methodology, featuring:
 
+**🎯 Kimball Methodology Benefits:**
+- **Business-First Design**: Aligned with business processes and user needs
+- **Query Performance**: Optimized for analytical workloads and reporting
+- **Scalability**: Efficient handling of large datasets and complex joins
+- **Maintainability**: Clear separation of concerns and logical structure
+- **Industry Standard**: Proven approach used by leading organizations
+
 - **1 Fact Table**: `fact_ad_performance` - Central hub for all metrics
 - **6 Dimension Tables**: Complete Kimball implementation with business logic
   - **dim_campaigns**: Campaign details, objectives, budget tiers, status
@@ -34,13 +41,102 @@ Our data architecture follows the **Kimball Star Schema** methodology, featuring
 - **Optimized Performance**: Indexed foreign keys, denormalized structure
 - **Business Focus**: Aligned with marketing analytics requirements
 
-**📁 Complete diagrams and documentation available in `star_schema_diagrams/` folder**
 
-**🚀 Generate Custom Diagrams:**
-```bash
-cd star_schema_diagrams/
-python generate_star_schema.py
-```
+### 📊 **Database ERD (Entity Relationship Diagram)**
+
+Here's a visual representation of the AdSpendIQ **Kimball Star Schema**, illustrating the relationships between the fact, dimension, and mart tables:
+
+![AdSpendIQ Star Schema ERD](star_schema_diagrams/adspendiq.png)
+
+**ERD Features:**
+- **Central Fact Table**: `fact_ad_performance` with all ad metrics
+- **6 Dimension Tables**: Complete Kimball methodology implementation
+- **3 Mart Tables**: Business intelligence aggregations
+- **Proper Relationships**: All foreign key constraints and cardinality
+- **Professional Design**: Clean, readable database structure
+
+
+
+### 🚀 **Airflow DAG Visualizations**
+
+Here are the professional visualizations of all Airflow DAGs that orchestrate the AdSpendIQ data pipeline, with detailed explanations of what each DAG does:
+
+#### **Master Portfolio Pipeline DAG**
+![Master Portfolio Pipeline](dag_visualizations/master_portfolio_pipeline_dag.png)
+
+**Purpose**: Orchestrates the complete end-to-end data pipeline execution
+**What it does**: Coordinates all other DAGs, manages dependencies, and ensures the entire data pipeline runs successfully from data generation to business intelligence
+
+#### **Data Generation & Loading DAGs**
+
+**Ad Data Generator DAG**
+![Ad Data Generator DAG](dag_visualizations/ad_data_generator_dag.png)
+
+**Purpose**: Generates and loads daily ad campaign data
+**What it does**: 
+- Generates realistic daily ad data (5,000+ records per day)
+- Loads data to Snowflake data warehouse
+- Applies data retention policies
+- Logs pipeline execution summary
+
+#### **Transformation & Analytics DAGs**
+
+**DBT Transformation DAG**
+![DBT Transformation DAG](dag_visualizations/dbt_transformation_dag.png)
+
+**Purpose**: Transforms raw data into analytical models
+**What it does**: 
+- Builds the complete Kimball star schema
+- Creates dimension and fact tables
+- Generates business intelligence marts
+- Ensures data model consistency
+
+**Data Quality Validation DAG**
+![Data Quality Validation DAG](dag_visualizations/data_quality_validation_dag.png)
+
+**Purpose**: Ensures data quality and integrity
+**What it does**: 
+- Validates data using Great Expectations
+- Checks business rules and data constraints
+- Monitors data quality metrics
+- Alerts on quality issues
+
+**Analytics Testing DAG**
+![Analytics Testing DAG](dag_visualizations/analytics_testing_dag.png)
+
+**Purpose**: Validates analytics and business logic
+**What it does**: 
+- Runs comprehensive data tests
+- Validates business metrics and KPIs
+- Ensures data accuracy for reporting
+- Performs end-to-end pipeline testing
+
+#### **Monitoring & Alerting DAG**
+![Monitoring & Alerting DAG](dag_visualizations/monitoring_alerting_dag.png)
+
+**Purpose**: Monitors pipeline health and sends alerts
+**What it does**: 
+- Tracks pipeline execution status
+- Monitors data quality metrics
+- Sends email alerts for failures
+- Provides pipeline health dashboard
+
+**DAG Features:**
+- **Complete Pipeline Coverage**: End-to-end data workflow orchestration
+- **Professional Visualization**: Clear task dependencies and relationships
+- **Production Ready**: Error handling, retries, and monitoring
+- **Scalable Architecture**: Modular design for easy maintenance and extension
+- **Business Focus**: Each DAG serves a specific business purpose
+
+**🔄 How the DAGs Work Together:**
+1. **Master DAG** orchestrates the entire pipeline execution
+2. **Data Generation DAG** creates and loads daily ad data
+3. **Data Quality DAG** validates data integrity and quality
+4. **DBT Transformation DAG** builds the analytical data model
+5. **Analytics Testing DAG** ensures business logic accuracy
+6. **Monitoring DAG** tracks pipeline health and sends alerts
+
+**📊 Pipeline Flow**: Data Generation → Quality Validation → Transformation → Analytics Testing → Business Intelligence
 
 ## 🏗️ Architecture
 
@@ -87,14 +183,7 @@ python generate_star_schema.py
 | **Great Expectations** | ✅ **COMPLETE** | Advanced data validation |
 | **Unit Testing** | ✅ **COMPLETE** | Automated test coverage |
 
-### 🎯 **Overall Project Status: 100% COMPLETE** 🎉
 
-**This project is now a comprehensive, production-ready data engineering portfolio that demonstrates:**
-- ✅ **End-to-End Data Pipeline**: Complete from data generation to business intelligence
-- ✅ **Professional Architecture**: Kimball methodology with optimized performance
-- ✅ **Production Features**: Monitoring, alerting, testing, and documentation
-- ✅ **Portfolio Ready**: Visual diagrams, DAG graphs, and complete documentation
-- ✅ **Modern Data Stack**: Latest technologies and best practices
 
 ## 🛠️ **Technology Stack**
 
@@ -156,30 +245,38 @@ ad_campaign_spend_tracker/
 │   ├── STAR_SCHEMA_GUIDE.md         # Complete usage guide
 │   ├── generate_star_schema.py      # Custom diagram generator
 │   └── FOLDER_STRUCTURE.md          # Organization overview
+├── 🗄️ mysql_erd_setup/              # MySQL ERD setup & documentation
+│   ├── mysql_erd_schema.sql         # Complete MySQL schema script
+│   ├── MYSQL_ERD_GUIDE.md          # MySQL Workbench ERD guide
+│   └── README.md                    # ERD setup documentation
+├── 📊 dag_visualizations/           # Airflow DAG visualizations
+│   ├── README.md                    # DAG visualization documentation
+│   ├── master_portfolio_pipeline_dag.png # Master orchestration DAG
+│   ├── ad_data_generator_dag.png   # Data generation pipeline
+│   ├── data_quality_validation_dag.png # Data quality pipeline
+│   ├── dbt_transformation_dag.png  # DBT transformation pipeline
+│   ├── analytics_testing_dag.png   # Analytics & testing pipeline
+│   └── monitoring_alerting_dag.png # Monitoring & alerting pipeline
 ├── 🎨 qlik_sense_dashboard/         # Qlik Sense dashboard setup
 │   ├── README.md                    # Dashboard overview
 │   ├── QUICK_START.md               # Quick start guide
 │   ├── qlik_workbook_template.md    # Step-by-step app creation
 │   ├── advanced_calculations.md     # Advanced Qlik expressions
 │   └── dashboard_mockup.md          # Visual layout guide
-├── 📊 dag_visualizations/           # Airflow DAG visualizations
-│   ├── README.md                    # Visualization documentation
-│   └── *.png                        # DAG graph images
-├── 📚 sql/                          # SQL scripts
-│   └── create_raw_table.sql         # Snowflake table creation
-├── 📖 docs/                         # Documentation
-│   └── PORTFOLIO_SUMMARY.md         # Project overview
-├── 🚀 run_portfolio_queries.py      # Analytics showcase
-├── 🧪 run_tests.py                  # Test runner
-├── 📋 requirements.txt               # Python dependencies
-├── 📋 requirements-test.txt          # Testing dependencies
-├── ⚙️ pytest.ini                    # PyTest configuration
-├── 🔐 .env                          # Environment variables
-├── 📧 EMAIL_SETUP.md                # Email alert configuration
-└── 📖 README.md                     # This file
+
 ```
 
 ## 🎨 **Portfolio Components**
+
+### **🌟 Complete Visual Portfolio**
+
+Your AdSpendIQ project now includes a comprehensive visual portfolio showcasing:
+
+- **📊 Database ERD**: Professional Kimball star schema visualization
+- **🚀 Airflow DAGs**: Complete pipeline orchestration diagrams
+- **🌟 Star Schema Diagrams**: Detailed data model documentation
+- **🎨 Qlik Sense Dashboard**: Business intelligence mockups
+- **📈 DAG Visualizations**: Workflow orchestration showcase
 
 ### **🌟 Star Schema Diagrams**
 - **Professional Visualizations**: PNG diagrams for presentations
@@ -188,17 +285,27 @@ ad_campaign_spend_tracker/
 - **Complete Documentation**: Usage guides and examples
 - **6 Dimension Tables**: Full Kimball implementation with business logic
 
+### **🗄️ MySQL ERD Setup**
+- **Complete Schema Script**: Ready-to-run MySQL database creation
+- **Multiple Tool Support**: Works with MySQL Workbench, DBeaver, and more
+- **Professional ERD**: Star schema visualization with relationships
+- **Portfolio Ready**: Perfect for showcasing database design skills
+
+### **📊 Airflow DAG Visualizations**
+- **Complete Pipeline Views**: All 6 DAGs visualized with professional graphs
+- **Workflow Orchestration**: Clear representation of data pipeline stages
+- **Task Dependencies**: Visual mapping of complex workflow relationships
+- **Portfolio Showcase**: Professional diagrams demonstrating orchestration skills
+- **Professional Layout**: Clean, readable workflow representations
+- **Production Ready**: Error handling, monitoring, and alerting visualization
+
 ### **🎨 Qlik Sense Dashboard**
 - **Complete Setup Guide**: Step-by-step implementation
 - **Advanced Calculations**: Sophisticated business metrics
 - **Visual Mockups**: Professional dashboard layouts
 - **Portfolio Ready**: Documentation and examples
 
-### **📊 Airflow DAG Visualizations**
-- **Professional Graphs**: PNG images of all DAGs
-- **Portfolio Showcase**: Visual representation of orchestration
-- **Graphviz Integration**: High-quality diagram generation
-- **Complete Coverage**: All 6 DAGs visualized
+
 
 ### **📧 Email Alert System**
 - **SMTP Configuration**: Professional notification setup
@@ -296,50 +403,9 @@ python great_expectations/validate_ad_data.py
 - **Value Ranges**: Business rule enforcement
 - **Coverage Target**: 80%+ code coverage
 
-## 📊 **Data Model**
 
-### **Kimball Star Schema**
-```
-                    ┌─────────────────┐
-                    │   Fact Tables   │
-                    │                 │
-                    │ • fact_ad_      │
-                    │   performance   │
-                    │ • mart_campaign_│
-                    │   performance   │
-                    │ • mart_platform_│
-                    │   performance   │
-                    │ • mart_daily_   │
-                    │   performance   │
-                    └─────────────────┘
-                            │
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-        ▼                   ▼                   ▼
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│ Dimensions  │    │ Dimensions  │    │ Dimensions  │
-│             │    │             │    │             │
-│ • dim_      │    │ • dim_      │    │ • dim_      │
-│   platforms │    │   geography │    │   dates     │
-│ • dim_      │    │ • dim_      │    │ • dim_      │
-│   campaigns │    │   devices   │    │   ad_formats│
-└─────────────┘    └─────────────┘    └─────────────┘
-```
 
-## 🔍 **Data Quality & Validation**
 
-### **Great Expectations Suite**
-- **Schema Validation**: Column presence, data types
-- **Business Rules**: CTR ≤ 100%, impressions ≥ clicks
-- **Value Ranges**: Reasonable spend, impression limits
-- **Data Integrity**: Unique constraints, referential integrity
-
-### **Automated Testing**
-- **Unit Tests**: Function behavior validation
-- **Integration Tests**: End-to-end pipeline testing
-- **Data Quality Tests**: Business rule enforcement
-- **Performance Tests**: Pipeline efficiency validation
 
 ## 📈 **Business Intelligence**
 
@@ -357,44 +423,6 @@ python great_expectations/validate_ad_data.py
 - **Time Series Analysis**: Trend identification
 - **Device Performance**: Cross-device optimization
 
-## 🚀 **Portfolio Value**
-
-### **Technical Skills Demonstrated**
-- **Data Engineering**: ETL/ELT pipeline development
-- **Cloud Platforms**: Snowflake data warehouse
-- **Orchestration**: Apache Airflow workflow management
-- **Data Modeling**: Kimball star schema design
-- **Testing**: Comprehensive test automation
-- **Documentation**: Professional project documentation
-
-### **Business Understanding**
-- **Marketing Analytics**: Ad campaign performance metrics
-- **Data Quality**: Production-ready validation
-- **Performance Optimization**: Efficient data processing
-- **Scalability**: Cloud-native architecture
-- **Monitoring**: Pipeline health tracking
-
-## 🔮 **Future Enhancements**
-
-### **Phase 4: Advanced Analytics**
-- [ ] **Tableau Integration**: Interactive dashboards
-- [ ] **Machine Learning**: Predictive analytics
-- [ ] **Real-time Processing**: Streaming data pipeline
-- [ ] **Advanced Testing**: Performance benchmarking
-
-### **Phase 5: Production Features**
-- [ ] **CI/CD Pipeline**: Automated deployment
-- [ ] **Monitoring**: Advanced alerting & metrics
-- [ ] **Security**: Role-based access control
-- [ ] **Compliance**: GDPR, CCPA compliance
-
-## 📚 **Documentation Resources**
-
-- **dbt Documentation**: `dbt docs serve` (http://localhost:8080)
-- **Project Summary**: [PORTFOLIO_SUMMARY.md](docs/PORTFOLIO_SUMMARY.md)
-- **Code Coverage**: `htmlcov/index.html`
-- **Test Results**: `pytest` output with coverage
-
 ## 🤝 **Contributing**
 
 This is a portfolio project demonstrating data engineering skills. For questions or feedback:
@@ -410,14 +438,6 @@ This project is created for portfolio demonstration purposes. Feel free to use a
 
 ---
 
-## 🎯 **Portfolio Showcase**
 
-### **What This Project Demonstrates**
-- **Data Engineering Excellence**: Complete end-to-end pipeline
-- **Professional Architecture**: Kimball methodology implementation
-- **Modern Technology Stack**: Latest tools and best practices
-- **Production Readiness**: Testing, monitoring, and documentation
-- **Business Intelligence**: Real-world analytics and insights
-- **Visual Communication**: Professional diagrams and documentation
 
 
