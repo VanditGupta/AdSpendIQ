@@ -15,7 +15,21 @@ This project uses **Faker** to generate realistic ad campaign data, simulating a
 - **Modern Data Stack**: Airflow, Snowflake, dbt, Python, Qlik Sense
 - **Production-Ready Code**: Comprehensive testing, documentation, error handling
 - **Advanced Orchestration**: Master DAG with email alerts & monitoring
-- **Professional Visualizations**: DAG graphs, star schema diagrams, dashboard mockups
+- **Professional Visualizations**: DAG graphs, star schema diagrams, dashboards using Apache Superset & Qlik Sense
+
+## 🎨 **Final Result - Dashboard**
+
+1. **Executive Summary Dashboard** - Last 30 Days
+   
+![AdSpendIQ Executive Summary Dashboard](dashboards/ad-spend-iq-executive-summary-last-30-days-2025-08-17T20-13-33.861Z.jpg)
+
+This dashboard shows advertising performance with $41.8M total spend, platform breakdowns, geographic insights, and daily trends.
+
+2. **Campaign Performance Dashboard** - Last 30 Days
+
+![AdSpendIQ Campaign Performance Dashboard](dashboards/ad-spend-iq-campaign-performance-last-30-days-2025-08-17T20-13-33.861Z.jpg)
+
+This dashboard shows campaign performance with $41.8M total spend, platform breakdowns, geographic insights, and daily trends.
 
 ## 🏗️ Architecture
 
@@ -68,9 +82,9 @@ Here's a visual representation of the AdSpendIQ exported from DBeaver, illustrat
                        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
                        │   Data Quality  │    │   Data          │    │   Business      │
                        │   Validation    │    │   Retention     │    │   Intelligence  │
-                       │   (Great        │    │   Management    │    │   (Qlik Sense)  │
-                       │    Expectations │    │                 │    │                 │
-                       │   + PyTest)     │    │                 │    │                 │
+                       │   (Great        │    │                 │    │   (Qlik Sense + │
+                       │    Expectations │    │                 │    │   Apache        │
+                       │   + PyTest)     │    │                 │    │   Superset)     │
                        └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -264,6 +278,11 @@ ad_campaign_spend_tracker/
 │   ├── qlik_workbook_template.md    # Step-by-step app creation
 │   ├── advanced_calculations.md     # Advanced Qlik expressions
 │   └── dashboard_mockup.md          # Visual layout guide
+├── 📊 apache_superset_dashboard/    # Apache Superset BI platform
+│   ├── README.md                    # Superset setup and configuration
+│   ├── requirements.txt             # Python dependencies
+│   ├── docker-compose.yml           # Docker deployment setup
+│   └── sample_dashboards.md         # Dashboard configuration examples
 
 ```
 
@@ -278,6 +297,7 @@ Your AdSpendIQ project now includes a comprehensive visual portfolio showcasing:
 - **🌟 Star Schema Diagrams**: Detailed data model documentation
 - **🎨 Qlik Sense Dashboard**: Business intelligence mockups
 - **📈 DAG Visualizations**: Workflow orchestration showcase
+- **📊 Apache Superset**: Advanced BI platform with interactive dashboards
 
 ### **🌟 Star Schema Diagrams**
 - **Professional Visualizations**: PNG diagrams for presentations
@@ -305,6 +325,13 @@ Your AdSpendIQ project now includes a comprehensive visual portfolio showcasing:
 - **Advanced Calculations**: Sophisticated business metrics
 - **Visual Mockups**: Professional dashboard layouts
 - **Portfolio Ready**: Documentation and examples
+
+### **📊 Apache Superset Dashboard**
+- **Enterprise BI Platform**: Modern, scalable business intelligence
+- **Interactive Dashboards**: 50+ chart types with advanced filtering
+- **SQL Lab**: Powerful data exploration and query interface
+- **Mobile Optimized**: Responsive design for all devices
+- **Production Ready**: Docker deployment with security and monitoring
 
 
 

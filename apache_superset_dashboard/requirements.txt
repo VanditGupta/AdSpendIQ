@@ -1,0 +1,32 @@
+# Apache Superset Requirements
+# Core Superset
+apache-superset==3.0.1
+
+# Database Drivers
+snowflake-sqlalchemy==1.7.6
+psycopg2-binary==2.9.7
+pymysql==1.1.0
+
+# Additional Dependencies
+redis==4.6.0
+celery==5.3.1
+flower==2.0.1
+
+# Development Tools
+pytest==7.4.2
+black==23.9.1
+flake8==6.1.0
+
+# Optional: Advanced Features
+pyhive==0.7.0
+impyla==0.18.0
+kafka-python==2.0.2
+
+# Security
+cryptography==41.0.7
+python-dotenv==1.0.0
+
+# Performance
+gunicorn==21.2.0
+gevent==23.7.0
+eventlet==0.33.3
