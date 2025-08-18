@@ -451,6 +451,34 @@ python great_expectations/validate_ad_data.py
 - **Time Series Analysis**: Trend identification
 - **Device Performance**: Cross-device optimization
 
+## 🗂️ **Data Catalog & Governance**
+
+### **Data Dictionary & Metadata**
+- **Business Definitions**: Clear descriptions of all metrics and dimensions
+- **Column Documentation**: Field-level metadata and data types
+- **Data Lineage**: Complete traceability from source to dashboard
+- **Data Ownership**: Clear responsibility for data quality and maintenance
+
+### **Data Quality Framework**
+- **Great Expectations**: Automated data validation rules
+- **Business Rules**: Data constraints and quality checks
+- **Monitoring**: Real-time data quality metrics
+- **Alerting**: Automated notifications for quality issues
+
+### **Data Lifecycle Management**
+- **Retention Policies**: 90-day rolling data retention
+- **Pipeline Monitoring**: Automated health checks
+- **Version Control**: dbt model versioning and documentation
+- **Change Management**: Controlled data model evolution
+
+### **Cloud-Native Governance Features**
+*Note: The following features are handled by Snowflake cloud platform:*
+- **Access Management**: Role-based access control (RBAC)
+- **Data Privacy**: Field-level security and data masking
+- **Compliance Tracking**: SOC2, GDPR, HIPAA compliance
+- **Audit Logging**: Complete access and change audit trails
+- **Encryption**: Data encryption at rest and in transit
+
 ## 🤝 **Contributing**
 
 This is a portfolio project demonstrating data engineering skills. For questions or feedback:
